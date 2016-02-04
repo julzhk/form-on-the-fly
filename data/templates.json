@@ -1,0 +1,14 @@
+{
+  "textTemplate": "<label for='{{ content.name }}'>{{ content.name }}</label><input name='{{ content.name }}' type='text' size='{{ content.size }}' value='{{ content.value}}'><br>",
+  "submitTemplate": "<input name='{{ content.name }}' type='submit' value='{{ content.value}}'><br>",
+  "inputTemplate":"TBC",
+  "textareaTemplate":"<textarea name={{ content.name }} rows='{{ content.rows }}' cols='{{ content.width }}'>{{ content.value}}</textarea>",
+  "buttonTemplate":"<button name={{ content.name }} type='button'>{{ content.value }}</button>",
+  "selectTemplate":"TBC",
+  "optionTemplate":"TBC",
+  "optgroupTemplate":"TBC",
+  "fieldsetTemplate":"TBC",
+  "labelTemplate":"<label for='{{ content.name }}'>{{ content.value }}</label>"
+}
+
+
