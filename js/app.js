@@ -66,6 +66,12 @@ app.directive('contentItem', function ($compile, TemplateService) {
             case 'label':
                 template = templates.labelTemplate;
                 break;
+            case 'email':
+                template = templates.emailTemplate;
+                break;
+            case 'checkbox':
+                template = templates.checkboxTemplate;
+                break;
         }
         return template;
     };

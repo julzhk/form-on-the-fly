@@ -1,14 +1,19 @@
 {
-  "textTemplate": "<label for='{{ content.name }}'>{{ content.name }}</label><input name='{{ content.name }}' type='text' size='{{ content.size }}' value='{{ content.value}}'><br>",
+  "textTemplate": "<div class='form-group'><label for='{{ content.name }}'>{{ content.name }}</label><input name='{{ content.name }}' type='text' size='{{ content.size }}' value='{{ content.value}}'></div>",
   "submitTemplate": "<input name='{{ content.name }}' type='submit' value='{{ content.value}}'><br>",
   "inputTemplate":"TBC",
   "textareaTemplate":"<textarea name={{ content.name }} rows='{{ content.rows }}' cols='{{ content.width }}'>{{ content.value}}</textarea>",
-  "buttonTemplate":"<button name={{ content.name }} type='button'>{{ content.value }}</button>",
+  "buttonTemplate":"<button class='btn' name={{ content.name }} type='button'>{{ content.value }}</button>",
   "selectTemplate":"TBC",
   "optionTemplate":"TBC",
   "optgroupTemplate":"TBC",
   "fieldsetTemplate":"TBC",
-  "labelTemplate":"<label for='{{ content.name }}'>{{ content.value }}</label>"
+  "labelTemplate":"<label for='{{ content.name }}' class='control-label'>{{ content.value }}</label>",
+  "emailTemplate":"<br><label for='exampleInputEmail1'>exampleInputEmail1</label><div class='form-group'><input type='email' class='form-control' id='exampleInputEmail1' placeholder='Email'></div>",
+  "passwordTemplate":"TBC",
+  "fileTemplate":"TBC",
+  "helpTemplate":"TBC",
+  "checkboxTemplate":"<div class='checkbox'><label><input type='checkbox'> Check me out</label></div>",
+  "":""
 }
-
 

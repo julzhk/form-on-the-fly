@@ -30,5 +30,19 @@
         "rows" : "5",
         "value" : "submit me"
     },
+  {
+      "content_type" : "email",
+        "name" : "txtrea",
+        "width" : "33",
+        "rows" : "5",
+        "value" : "submit me"
+    },
+{
+      "content_type" : "checkbox",
+        "name" : "txtrea",
+        "width" : "33",
+        "rows" : "5",
+        "value" : "submit me"
+    },
   {}
 ]
