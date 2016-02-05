@@ -72,6 +72,9 @@ app.directive('contentItem', function ($compile, TemplateService) {
             case 'checkbox':
                 template = templates.checkboxTemplate;
                 break;
+            case 'password':
+                template = templates.passwordTemplate;
+                break;
         }
         return template;
     };

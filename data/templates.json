@@ -10,10 +10,10 @@
   "fieldsetTemplate":"TBC",
   "labelTemplate":"<label for='{{ content.name }}' class='control-label'>{{ content.value }}</label>",
   "emailTemplate":"<br><label for='exampleInputEmail1'>exampleInputEmail1</label><div class='form-group'><input type='email' class='form-control' id='exampleInputEmail1' placeholder='Email'></div>",
-  "passwordTemplate":"TBC",
+  "passwordTemplate":"1<div class='form-group'><label for='{{ content.name }}'>{{ content.value }}</label><input name='{{ content.name }}' type='password'></div>",
   "fileTemplate":"TBC",
   "helpTemplate":"TBC",
-  "checkboxTemplate":"<div class='checkbox'><label><input type='checkbox'> Check me out</label></div>",
+  "checkboxTemplate":"<div class='checkbox'><label><input name='{{ content.name }}' type='checkbox'>{{ content.value }}</label></div>",
   "":""
 }
 
