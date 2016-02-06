@@ -1,0 +1,26 @@
+{
+
+
+  "textTemplate": "<label class='item item-input'><span class='input-label'>Username</span><input type='text' placeholder='First Name'></label>",
+  "textinlineLabelTemplate": "<label class='item item-input'><span class='input-label'>Username</span><input type='text' placeholder='First Name'></label>",
+  "textstackedLabelTemplate": "<label class='item item-input item-stacked-label'><span class='input-label'>First Name</span><input type='text' placeholder='John'></label>",
+  "submitTemplate": "<button class='button button-block button-positive'>Submit</button>",
+  "inputTemplate":"TBC",
+  "textareaTemplate":"<textarea name={{ content.name }} rows='{{ content.rows }}' cols='{{ content.width }}'>{{ content.value}}</textarea>",
+  "buttonTemplate":"<button class='button button-block button-positive'>submit</button>",
+  "selectTemplate":"TBC",
+  "optionTemplate":"TBC",
+  "optgroupTemplate":"TBC",
+  "fieldsetTemplate":"TBC",
+  "labelTemplate":"<label for='{{ content.name }}' class='control-label'>{{ content.value }}</label>",
+  "emailTemplate":"<br><label for='exampleInputEmail1'>exampleInputEmail1</label><div class='form-group'><input type='email' class='form-control' id='exampleInputEmail1' placeholder='Email'></div>",
+  "passwordTemplate":"1<div class='form-group'><label for='{{ content.name }}'>{{ content.value }}</label><input name='{{ content.name }}' type='password'></div>",
+  "fileTemplate":"TBC",
+  "helpTemplate":"TBC",
+  "checkboxTemplate":"<div class='checkbox'><label><input name='{{ content.name }}' type='checkbox'>{{ content.value }}</label></div>",
+  "formgroupstartTemplate":"<div class='form-group'>",
+  "formgroupendTemplate":"</div>",
+  "":"",
+  "oldtextTemplate": "<label for='{{ content.name }}'>{{ content.name }}</label><input class='form-control' name='{{ content.name }}' type='text' size='{{ content.size }}' value='{{ content.value}}'>"
+}
+
