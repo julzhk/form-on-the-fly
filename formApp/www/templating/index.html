@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+  <script src="templating.js"></script>
+</head>
+
+<body ng-app="experimentation">
+  <section id="experiment-data" ng-controller="ExperimentDataController">
+
+    <exercise-data-item ng-repeat="d in dataItems" content="d"></exercise-data-item>
+
+    <button ng-click="saveData()">Save</button>
+
+    <div>
+      <p>Text entered in first prompt:</p>
+      <p ng-bind="dataItems[0].response"></p>
+    </div>
+  </section>
+</body>
+
+</html>
