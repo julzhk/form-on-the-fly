@@ -1,7 +1,7 @@
 {
 
 
-  "textTemplate": "<label class='item item-input'><span class='input-label'>Username</span><input type='text' placeholder='First Name'></label>",
+  "textTemplate": "<label class='item item-input'><span class='input-label'>Username</span><input ng-model='formdata' type='text' placeholder='First Name'></label>",
   "textinlineLabelTemplate": "<label class='item item-input'><span class='input-label'>Username</span><input type='text' placeholder='First Name'></label>",
   "textstackedLabelTemplate": "<label class='item item-input item-stacked-label'><span class='input-label'>First Name</span><input type='text' placeholder='John'></label>",
   "submitTemplate": "<button class='button button-block button-positive'>Submit</button>",
