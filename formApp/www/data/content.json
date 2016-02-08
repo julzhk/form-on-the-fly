@@ -1,14 +1,6 @@
 [
-    {
-       "content_type" : "text",
-        "name" : "textform1",
-        "label" : "temp-photo.jpg",
-        "size" : "25",
-        "value" : "val"
-    },
-    {
-      "content_type" : "submit",
-        "name" : "submitter",
-        "value" : "submit me"
-    }
+  {"type": "input"},
+  {"type": "input"},
+  {"type": "input"},
+  {"type": "input"}
 ]
