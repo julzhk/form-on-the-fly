@@ -118,7 +118,8 @@ app.controller('ContentCtrl', function ($scope, $ionicPlatform, DataService, for
   var vm = this;
   vm.model = {};
   $scope.submit = function() {
-    console.log($scope.model);
+    console.log(vm.model);
+    formdataService.addformdata(vm.model);
   };
   // Initialize the database.
     $ionicPlatform.ready(function() {
@@ -139,6 +140,6 @@ app.controller('ContentCtrl', function ($scope, $ionicPlatform, DataService, for
     // save button action
   $scope.xxsaveformdata = function() {
       formdataService.addformdata({'new':'mew'});
-      //formdataService.updateformdata($scope.formdata);
+      formdataService.updateformdata($scope.formdata);
     };
 });
