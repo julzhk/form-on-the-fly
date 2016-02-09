@@ -4,7 +4,7 @@ function formdataService($q) {
     //pouchdb CRUD
     var _db;
     // We'll need this later.
-    var _formdatas;
+    var _pouchdb_rows;
     return {
         initDB: initDB,
         getAllformdatas: getAllformdatas,
@@ -12,61 +12,57 @@ function formdataService($q) {
         updateformdata: updateformdata,
         deleteformdata: deleteformdata
     };
-    function initDB() {
+    function initDB(dbname) {
         // Creates the database or opens if it already exists
-        _db = new PouchDB('formdatas', {adapter: 'websql'});
+        _db = new PouchDB(dbname, {adapter: 'websql'});
     }
-
     function addformdata(formdata) {
           console.log('clik add formdata');
-          console.log(formdata);
           return $q.when(_db.post(formdata));
     };
-
     function updateformdata(formdata) {
         return $q.when(_db.put(formdata));
     };
-
     function deleteformdata(formdata) {
         return $q.when(_db.remove(formdata));
     };
 
     function getAllformdatas() {
-        if (!_formdatas) {
+        if (!_pouchdb_rows) {
            return $q.when(_db.allDocs({ include_docs: true}))
                 .then(function(docs) {
                     // Each row has a .doc object and we just want to send an
-                    // array of formdata objects back to the calling controller,
+                    // array of pouchdb objects back to the calling controller,
                     // so let's map the array to contain just the .doc objects.
-                    _formdatas = docs.rows.map(function(row) {
+                    _pouchdb_rows = docs.rows.map(function(row) {
                         // pre-process (date format etc)
                         // Dates are not automatically converted from a string.
-                        //row.doc.Date = new Date(row.doc.Date);
+                        // ie: row.doc.Date = new Date(row.doc.Date);
                         return row.doc;
                     });
                     // Listen for changes on the database.
                     _db.changes({ live: true, since: 'now', include_docs: true})
                        .on('change', onDatabaseChange);
-                    return _formdatas;
+                    return _pouchdb_rows;
                 });
         } else {
             // Return cached data as a promise
-            return $q.when(_formdatas);
+            return $q.when(_pouchdb_rows);
         }
     };
 
     function onDatabaseChange(change) {
-        var index = findIndex(_formdatas, change.id);
-        var formdata = _formdatas[index];
+        var index = findIndex(_pouchdb_rows, change.id);
+        var formdata = _pouchdb_rows[index];
         if (change.deleted) {
             if (formdata) {
-                _formdatas.splice(index, 1); // delete
+                _pouchdb_rows.splice(index, 1); // delete
             }
         } else {
             if (formdata && formdata._id === change.id) {
-                _formdatas[index] = change.doc; // update
+                _pouchdb_rows[index] = change.doc; // update
             } else {
-                _formdatas.splice(index, 0, change.doc);// insert
+                _pouchdb_rows.splice(index, 0, change.doc);// insert
             }
         }
     }
@@ -83,6 +79,7 @@ function formdataService($q) {
 
 var app = angular.module('starter', ['ionic', 'formlyIonic']);
 app.factory('formdataService', formdataService);
+
 app.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {
@@ -113,7 +110,7 @@ app.factory('DataService', function ($http, URL) {
 });
 
 
-app.controller('ContentCtrl', function ($scope, $ionicPlatform, DataService, formdataService) {
+app.controller('ContentCtrl', function ($scope, $http, $ionicPlatform, DataService, formdataService) {
   var ctrl = this;
   var vm = this;
   vm.model = {};
@@ -123,7 +120,7 @@ app.controller('ContentCtrl', function ($scope, $ionicPlatform, DataService, for
   };
   // Initialize the database.
     $ionicPlatform.ready(function() {
-        formdataService.initDB();
+        formdataService.initDB('formdata3');
         // Get all formdata records from the database.
         formdataService.getAllformdatas().then(function(formdatas) {
         ctrl.formdatas = formdatas;
@@ -132,9 +129,16 @@ app.controller('ContentCtrl', function ($scope, $ionicPlatform, DataService, for
     //render content
     ctrl.content = [];
     ctrl.fetchContent = function () {
-        DataService.getData().then(function (result) {
-            vm.fields = result.data;
-        });
+      $http.get('http://127.0.0.1:8000/api')
+      .success(function(data, status, headers, config) {
+          vm.fields = data;
+      })
+      .error(function(error, status, headers, config) {
+        console.log(status);
+        console.log("Error occured");
+      });
+
+
     };
     ctrl.fetchContent();
     // save button action
