@@ -126,6 +126,7 @@ app.controller('ContentCtrl', function ($scope, $http, $ionicPlatform, DataServi
         // Get all formdata records from the database.
         formdataService.getAllformdatas().then(function(formdatas) {
         ctrl.formdatas = formdatas;
+        $scope.formdatas = formdatas;
       });
     });
     //render content
