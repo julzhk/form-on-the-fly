@@ -19,6 +19,16 @@ class FormElement(models.Model):
     label= models.CharField(max_length=255,default='label')
     placeholder= models.CharField(max_length=255,default='placeholder')
 
+    def to_json(self):
+        return {
+            "key": self.key,
+            "type": self.type,
+            "templateOptions": {
+                "label": self.label,
+                "placeholder": self.placeholder
+            }
+        }
+
     class Meta:
         ordering = ['order']
 

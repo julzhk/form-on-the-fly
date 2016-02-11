@@ -8,48 +8,14 @@ from django.forms import ModelForm
 import json
 from django.shortcuts import render
 from django.http import JsonResponse
-
+from formapi.models import Form, FormElement
 
 def form_api(request):
-    data = [
-    {"key": "email",
-    "type": "input",
-    "templateOptions": {
-      "label": "Email address",
-      "placeholder": "Enter email"
-      }
-    },
-    {
-    "key": "password",
-    "type": "input",
-    "templateOptions": {
-    "type": "password",
-    "label": "Password",
-    "placeholder": "Password"
-    }
-    },
-    {
-    "key": "checked",
-    "type": "checkbox",
-    "templateOptions": {
-      "label": "Check me out"
-      }
-    },
-        {
-    "key": "checked2",
-    "type": "checkbox",
-    "templateOptions": {
-      "label": "Check me out too"
-      }
-    },
-         {
-    "key": "checked3",
-    "type": "checkbox",
-    "templateOptions": {
-      "label": "Check me out three"
-      }
-    },
-    ]
+
+    myform = Form.objects.first()
+    elements = FormElement.objects.filter(form=myform)
+
+    data = [ele.to_json() for ele in elements]
     response = JsonResponse(data, safe=False)
     response['Access-Control-Allow-Headers'] = 'Content-Type'
     response['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
