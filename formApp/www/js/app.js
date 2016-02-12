@@ -119,7 +119,34 @@ app.controller('ContentCtrl', function ($scope, $http, $ionicPlatform, DataServi
   $scope.submit = function() {
     console.log(vm.model);
     formdataService.addformdata(vm.model);
+    post_data_server(vm.model);
   };
+
+
+  post_data_server= function (data) {
+      var promise = $http({method: 'POST', url: 'http://127.0.0.1:800/api', data: data});
+    promise.success(function (data, status, headers, config, statusText) {
+    // this callback will be called asynchronously
+    // when the response is available
+
+      $scope.success = statusText;
+    });
+
+    promise.error(function (data, status, headers, config, statusText) {
+        // called asynchronously if an error occurs
+      console.log(data);
+        console.log(status);
+        console.log(headers);
+        console.log(config);
+        console.log(statusText);
+
+        // or server returns response with an error status.
+      $scope.success = statusText;
+    });
+
+    };
+
+
   // Initialize the database.
     $ionicPlatform.ready(function() {
         formdataService.initDB();

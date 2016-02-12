@@ -11,14 +11,15 @@ from django.http import JsonResponse
 from formapi.models import Form, FormElement
 
 def form_api(request):
-
-    myform = Form.objects.first()
-    elements = FormElement.objects.filter(form=myform)
-
-    data = [ele.to_json() for ele in elements]
-    response = JsonResponse(data, safe=False)
+    if request.method == 'POST':
+        print 'post'
+        response = HttpResponse()
+    else:
+        myform = Form.objects.first()
+        elements = FormElement.objects.filter(form=myform)
+        data = [ele.to_json() for ele in elements]
+        response = JsonResponse(data, safe=False)
     response['Access-Control-Allow-Headers'] = 'Content-Type'
     response['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
     response['Access-Control-Allow-Origin'] = '*'
-
     return response
