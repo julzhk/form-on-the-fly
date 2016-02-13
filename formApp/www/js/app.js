@@ -10,9 +10,10 @@ function formdataService($q) {
         getAllformdatas: getAllformdatas,
         addformdata: addformdata,
         updateformdata: updateformdata,
-        deleteformdata: deleteformdata
+        deleteformdata: deleteformdata,
+        deleteallformdata: deleteallformdata
     };
-    function initDB(dbname) {
+    function initDB() {
         // Creates the database or opens if it already exists
         _db = new PouchDB('formdatas', {adapter: 'websql'});
     }
@@ -20,6 +21,13 @@ function formdataService($q) {
     function addformdata(formdata) {
           console.log('clik add formdata');
           return $q.when(_db.post(formdata));
+    };
+
+    function deleteallformdata() {
+          console.log('deleteallformdata formdata');
+          return $q.when(
+            _db.destroy()
+          );
     };
 
     function updateformdata(formdata) {
@@ -100,7 +108,6 @@ app.run(function($ionicPlatform) {
   });
 });
 
-
 app.constant('URL', 'data/');
 app.factory('DataService', function ($http, URL) {
     var getData = function () {
@@ -112,14 +119,34 @@ app.factory('DataService', function ($http, URL) {
 });
 
 
-app.controller('ContentCtrl', function ($scope, $http, $ionicPlatform, DataService, formdataService) {
+app.controller('FormCtrl', function ($scope, $state, $stateParams,
+                                     $ionicHistory, $http, $ionicPlatform,
+                                     DataService, formdataService) {
   var ctrl = this;
   var vm = this;
   vm.model = {};
-  $scope.submit = function() {
+  $scope.formsubmit = function() {
     console.log(vm.model);
     formdataService.addformdata(vm.model);
     post_data_server(vm.model);
+  };
+
+  $scope.clear= function() {
+    console.log('clear..');
+    formdataService.deleteallformdata();
+    console.log('cleared');
+    formdataService.initDB();
+    console.log('restart');
+    $ionicHistory.goBack();
+  };
+
+    $scope.goBack = function(){
+    $ionicHistory.goBack();
+  };
+
+
+  $scope.chooseForm= function(n){
+    $state.go('form', {formid: n});
   };
 
 
@@ -172,39 +199,37 @@ app.controller('ContentCtrl', function ($scope, $http, $ionicPlatform, DataServi
     };
 });
 
-var nameApp = angular.module('starter', ['ionic', 'ui.router']);
+var nameApp = app;
 
-nameApp.config(function($stateProvider, $urlRouterProvider) {
-
+app.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
-    .state('list', {
+    .state('login', {
       url: '/',
-      templateUrl: 'list.html',
+      templateUrl: 'login.html',
       controller: 'ListCtrl'
     })
-    .state('view', {
-      url: '/movie/:movieid',
-      templateUrl: 'view.html',
-      controller: 'ContentCtrl'
+    .state('formchooser', {
+      url: '/formchooser/:movieid',
+      templateUrl: 'formchooser.html',
+      controller: 'FormCtrl'
     })
     .state('form', {
       url: '/form/:movieid',
       templateUrl: 'form.html',
-      controller: 'ContentCtrl'
+      controller: 'FormCtrl'
     });
 
   $urlRouterProvider.otherwise("/");
 
 });
 
-nameApp.controller('ListCtrl', function($scope, $state) {
+app.controller('ListCtrl', function($scope, $state) {
   $scope.changePage = function(){
-    $state.go('view', {movieid: 1});
+    $state.go('formchooser');
   }
-
 });
 
-nameApp.controller('ContentCtrl', function($scope, $state, $stateParams, $ionicHistory) {
+app.controller('LoginCtrl', function($scope, $state, $stateParams, $ionicHistory) {
   console.log($stateParams.movieid);
   $scope.goBack = function(){
     $ionicHistory.goBack();
