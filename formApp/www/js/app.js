@@ -128,10 +128,8 @@ app.controller('ContentCtrl', function ($scope, $http, $ionicPlatform, DataServi
     promise.success(function (data, status, headers, config, statusText) {
     // this callback will be called asynchronously
     // when the response is available
-
       $scope.success = statusText;
     });
-
     promise.error(function (data, status, headers, config, statusText) {
         // called asynchronously if an error occurs
       console.log(data);
@@ -139,11 +137,9 @@ app.controller('ContentCtrl', function ($scope, $http, $ionicPlatform, DataServi
         console.log(headers);
         console.log(config);
         console.log(statusText);
-
         // or server returns response with an error status.
       $scope.success = statusText;
     });
-
     };
 
 
@@ -174,4 +170,47 @@ app.controller('ContentCtrl', function ($scope, $http, $ionicPlatform, DataServi
       formdataService.addformdata({'new':'mew'});
       formdataService.updateformdata($scope.formdata);
     };
+});
+
+var nameApp = angular.module('starter', ['ionic', 'ui.router']);
+
+nameApp.config(function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider
+    .state('list', {
+      url: '/',
+      templateUrl: 'list.html',
+      controller: 'ListCtrl'
+    })
+    .state('view', {
+      url: '/movie/:movieid',
+      templateUrl: 'view.html',
+      controller: 'ContentCtrl'
+    })
+    .state('form', {
+      url: '/form/:movieid',
+      templateUrl: 'form.html',
+      controller: 'ContentCtrl'
+    });
+
+  $urlRouterProvider.otherwise("/");
+
+});
+
+nameApp.controller('ListCtrl', function($scope, $state) {
+  $scope.changePage = function(){
+    $state.go('view', {movieid: 1});
+  }
+
+});
+
+nameApp.controller('ContentCtrl', function($scope, $state, $stateParams, $ionicHistory) {
+  console.log($stateParams.movieid);
+  $scope.goBack = function(){
+    $ionicHistory.goBack();
+  };
+  $scope.chooseForm= function(n){
+    $state.go('form', {movieid: n});
+  };
+
 });
