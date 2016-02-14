@@ -119,6 +119,30 @@ app.factory('DataService', function ($http, URL) {
 });
 
 
+app.controller('FormListCtrl', function ($scope, $state, $stateParams,
+                                     $ionicHistory, $http, $ionicPlatform) {
+  var ctrl = this;
+  var vm = this;
+    ctrl.fetchContent = function () {
+      $http.get('http://127.0.0.1:8000/api/names/')
+      .success(function(data, status, headers, config) {
+          $scope.formnames = data;
+      })
+      .error(function(error, status, headers, config) {
+        console.log(status);
+        console.log("Error occured");
+      });
+    };
+    ctrl.fetchContent();
+    $scope.chooseForm= function(n){
+      $state.go('form', {formid: n});
+    };
+    $scope.goBack = function(){
+      $ionicHistory.goBack();
+    };
+
+});
+
 app.controller('FormCtrl', function ($scope, $state, $stateParams,
                                      $ionicHistory, $http, $ionicPlatform,
                                      DataService, formdataService) {
@@ -145,13 +169,10 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
   };
 
 
-  $scope.chooseForm= function(n){
-    $state.go('form', {formid: n});
-  };
 
 
   post_data_server= function (data) {
-      var promise = $http({method: 'POST', url: 'http://127.0.0.1:8000/api', data: data});
+      var promise = $http({method: 'POST', url: 'http://127.0.0.1:8000/api/22', data: data});
     promise.success(function (data, status, headers, config, statusText) {
     // this callback will be called asynchronously
     // when the response is available
@@ -182,7 +203,7 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
     //render content
     ctrl.content = [];
     ctrl.fetchContent = function () {
-      $http.get('http://127.0.0.1:8000/api')
+      $http.get('http://127.0.0.1:8000/api/22')
       .success(function(data, status, headers, config) {
           vm.fields = data;
       })
@@ -192,11 +213,6 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
       });
     };
     ctrl.fetchContent();
-    // save button action
-  $scope.xxsaveformdata = function() {
-      formdataService.addformdata({'new':'mew'});
-      formdataService.updateformdata($scope.formdata);
-    };
 });
 
 var nameApp = app;
@@ -206,15 +222,15 @@ app.config(function($stateProvider, $urlRouterProvider) {
     .state('login', {
       url: '/',
       templateUrl: 'login.html',
-      controller: 'ListCtrl'
+      controller: 'LoginCtrl'
     })
     .state('formchooser', {
-      url: '/formchooser/:movieid',
+      url: '/formchooser/',
       templateUrl: 'formchooser.html',
-      controller: 'FormCtrl'
+      controller: 'FormListCtrl'
     })
     .state('form', {
-      url: '/form/:movieid',
+      url: '/form/:formid',
       templateUrl: 'form.html',
       controller: 'FormCtrl'
     });
@@ -223,19 +239,16 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
 });
 
-app.controller('ListCtrl', function($scope, $state) {
-  $scope.changePage = function(){
-    $state.go('formchooser');
-  }
-});
 
 app.controller('LoginCtrl', function($scope, $state, $stateParams, $ionicHistory) {
-  console.log($stateParams.movieid);
   $scope.goBack = function(){
     $ionicHistory.goBack();
   };
   $scope.chooseForm= function(n){
-    $state.go('form', {movieid: n});
+    $state.go('form', {formid: n});
   };
 
+  $scope.changePage = function(){
+    $state.go('formchooser');
+  }
 });

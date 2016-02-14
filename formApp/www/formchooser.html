@@ -36,11 +36,33 @@
 </ion-nav-bar>
 
 <ion-nav-view></ion-nav-view>
-<!--LOGIN page -->
 
-
-
-
+<!--Show FORM CHOOSER page -->
+  <ion-view view-title="Choose Form">
+    <ion-content class="padding">
+      <h3 class="title">
+        Choose the form you'd like to fill in
+      </h3>
+      <p>
+        These are the forms you have been subscribed to.
+      </p>
+      {{formnames}}
+      <ion-list>
+      <ion-item ng-repeat="item in formnames" ng-click="chooseForm(item.id)">
+        {{item.name}}
+      </ion-item>
+    </ion-list>
+      <button class="button icon ion-ios-arrow-back"
+              ng-click="goBack()"
+              nav-direction="back">Log out
+      </button>
+    </ion-content>
+  </ion-view>
 
 </body>
 </html>
+
+
+
+
+

@@ -29,7 +29,7 @@ def form_names_api(request):
     print request
     # form_id
     forms = Form.objects.all()
-    data = [myform.name for myform in forms]
+    data = [{'name':myform.name,'id':myform.id} for myform in forms]
     response = JsonResponse(data, safe=False)
     response['Access-Control-Allow-Headers'] = 'Content-Type'
     response['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
