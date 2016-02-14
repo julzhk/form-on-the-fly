@@ -172,7 +172,7 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
 
 
   post_data_server= function (data) {
-      var promise = $http({method: 'POST', url: 'http://127.0.0.1:8000/api/22', data: data});
+      var promise = $http({method: 'POST', url: 'http://127.0.0.1:8000/api/1', data: data});
     promise.success(function (data, status, headers, config, statusText) {
     // this callback will be called asynchronously
     // when the response is available
@@ -203,7 +203,7 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
     //render content
     ctrl.content = [];
     ctrl.fetchContent = function () {
-      $http.get('http://127.0.0.1:8000/api/22')
+      $http.get('http://127.0.0.1:8000/api/1')
       .success(function(data, status, headers, config) {
           vm.fields = data;
       })
