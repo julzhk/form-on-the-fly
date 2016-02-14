@@ -36,35 +36,35 @@
 </ion-nav-bar>
 
 <ion-nav-view></ion-nav-view>
-<!--LOGIN page -->
 
 
+<!--Show FORM page -->
 
-<!--Show FORM CHOOSER page -->
-<script id="formchooser.html" type="text/ng-template">
-  <ion-view view-title="Choose Form">
-    <ion-content class="padding">
-      <h3 class="title">
-        Choose the form you'd like to fill in
-      </h3>
-      <p>
-        These are the forms you have been subscribed to.
-      </p>
-
-
-      <ion-list>
-      <ion-item ng-repeat="item in ['Fave fruit','Best DJ', 'Nicest Bloke','Worst Film']" ng-click="chooseForm(item)">
-        {{item}}
-      </ion-item>
-    </ion-list>
-      <button class="button icon ion-ios-arrow-back"
+<ion-view view-title="Form">
+  <ion-content class="padding">
+    <div id="formcontainer" ng-controller="FormCtrl as ctrl">
+      <form name="ctrl.form" novalidate ng-submit="submit()">
+        <formly-form model="ctrl.model" fields="ctrl.fields">
+          <button type="submit" ng-click="formsubmit()" class="btn btn-default">Submit</button>
+          <button type="submit" ng-click="clear()" class="btn btn-default">Clear</button>
+        </formly-form>
+      </form>
+      {{ success }}
+      <hr>
+      {{ ctrl.model }}
+      <pre><div ng-repeat="n in formdatas">{{n}}</div></pre>
+          <button class="button icon ion-ios-arrow-back"
               ng-click="goBack()"
-              nav-direction="back">Log out
+              nav-direction="back">Go Back
       </button>
-    </ion-content>
-  </ion-view>
-</script>
-
+    </div>
+  </ion-content>
+</ion-view>
 
 </body>
 </html>
+
+
+
+
+
