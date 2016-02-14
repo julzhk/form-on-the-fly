@@ -15,11 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from formapi.views import form_api
+from formapi.views import form_api, form_names_api
 
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^api', form_api),
+    url(r'^api/names', form_names_api),
+    url(r'^api/(?P<form_id>\d+)', form_api),
 
 ]

@@ -10,7 +10,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from formapi.models import Form, FormElement
 
-def form_api(request):
+def form_api(request,form_id):
     if request.method == 'POST':
         print 'post'
         response = HttpResponse()
@@ -23,3 +23,17 @@ def form_api(request):
     response['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
     response['Access-Control-Allow-Origin'] = '*'
     return response
+
+
+def form_names_api(request):
+    print request
+    # form_id
+    forms = Form.objects.all()
+    data = [myform.name for myform in forms]
+    response = JsonResponse(data, safe=False)
+    response['Access-Control-Allow-Headers'] = 'Content-Type'
+    response['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+    response['Access-Control-Allow-Origin'] = '*'
+    return response
+
+
