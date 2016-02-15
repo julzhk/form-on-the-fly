@@ -240,7 +240,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
 });
 
 
-app.controller('LoginCtrl', function($scope, $state, $stateParams, $ionicHistory) {
+app.controller('LoginCtrl', function($scope, $state, $http, $stateParams, $ionicHistory) {
   $scope.goBack = function(){
     $ionicHistory.goBack();
   };
@@ -248,7 +248,20 @@ app.controller('LoginCtrl', function($scope, $state, $stateParams, $ionicHistory
     $state.go('form', {formid: n});
   };
 
-  $scope.changePage = function(){
-    $state.go('formchooser');
+  $scope.login = function login(email, password) {
+
+    console.log(this.email);
+    console.log(this.password);
+    $http.post('http://127.0.0.1:8000/api/v1/auth/login/',{'email':this.email,'password':this.password})
+      .success(function(data, status, headers, config) {
+        $state.go('formchooser');
+      })
+      .error(function(error, status, headers, config) {
+        console.log(status);
+        console.log("Error occured");
+      });
+
+
+
   }
 });

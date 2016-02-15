@@ -49,11 +49,11 @@
       <div class="list">
   <label class="item item-input item-stacked-label">
     <span class="input-label">Email</span>
-    <input type="text" placeholder="Email">
+    <input type="text" ng-model="email" placeholder="Email">
   </label>
   <label class="item item-input item-stacked-label">
     <span class="input-label">Password</span>
-    <input type="text" placeholder="Password">
+    <input type="text" ng-model="password" placeholder="Password">
   </label>
 </div>
 <div class="card">
@@ -71,7 +71,7 @@
   </div>
 </div>
       <button class="button button-positive"
-              ng-click="changePage()">Submit
+              ng-click="login('email','password')">Submit
       </button>
     </ion-content>
   </ion-view>
