@@ -52,9 +52,7 @@ class LoginView(views.APIView):
         if account is not None:
             if account.is_active:
                 login(request, account)
-
                 serialized = AccountSerializer(account)
-
                 return Response(serialized.data)
             else:
                 return Response({

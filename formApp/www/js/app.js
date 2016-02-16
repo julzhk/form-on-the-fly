@@ -124,7 +124,7 @@ app.controller('FormListCtrl', function ($scope, $state, $stateParams,
   var ctrl = this;
   var vm = this;
     ctrl.fetchContent = function () {
-      $http.get('http://127.0.0.1:8000/api/names/')
+      $http.get('http://127.0.0.1:8000/api/v1/forms/')
       .success(function(data, status, headers, config) {
           $scope.formnames = data;
       })
@@ -149,6 +149,7 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
   var ctrl = this;
   var vm = this;
   vm.model = {};
+
   $scope.formsubmit = function() {
     console.log(vm.model);
     formdataService.addformdata(vm.model);
@@ -169,24 +170,22 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
   };
 
 
-
-
   post_data_server= function (data) {
       var promise = $http({method: 'POST', url: 'http://127.0.0.1:8000/api/1', data: data});
-    promise.success(function (data, status, headers, config, statusText) {
-    // this callback will be called asynchronously
-    // when the response is available
-      $scope.success = statusText;
-    });
-    promise.error(function (data, status, headers, config, statusText) {
+      promise.success(function (data, status, headers, config, statusText) {
+        // this callback will be called asynchronously
+        // when the response is available
+        $scope.success = statusText;
+      });
+      promise.error(function (data, status, headers, config, statusText) {
         // called asynchronously if an error occurs
-      console.log(data);
+        console.log(data);
         console.log(status);
         console.log(headers);
         console.log(config);
         console.log(statusText);
         // or server returns response with an error status.
-      $scope.success = statusText;
+        $scope.success = statusText;
     });
     };
 
@@ -200,19 +199,22 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
         $scope.formdatas = formdatas;
       });
     });
+
     //render content
     ctrl.content = [];
-    ctrl.fetchContent = function () {
-      $http.get('http://127.0.0.1:8000/api/1')
+    ctrl.fetchContent = function (formid) {
+      $http.get('http://127.0.0.1:8000/api/' + formid)
       .success(function(data, status, headers, config) {
-          vm.fields = data;
+          vm.fields = data.elements;
+          vm.formname= data.meta.formname;
       })
       .error(function(error, status, headers, config) {
         console.log(status);
         console.log("Error occured");
       });
     };
-    ctrl.fetchContent();
+  console.log($stateParams.formid);
+    ctrl.fetchContent($stateParams.formid);
 });
 
 var nameApp = app;
@@ -259,6 +261,7 @@ app.controller('LoginCtrl', function($scope, $state, $http, $stateParams, $ionic
       .error(function(error, status, headers, config) {
         console.log(status);
         console.log("Error occured");
+        $scope.error = 'Login error!';
       });
 
 

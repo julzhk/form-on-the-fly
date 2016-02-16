@@ -21,8 +21,10 @@ from rest_framework_nested import routers
 from authentication.views import AccountViewSet
 from authentication.views import LoginView
 
+from formapi.views import FormViewSet
 router = routers.SimpleRouter()
 router.register(r'accounts', AccountViewSet)
+router.register(r'forms', FormViewSet)
 
 urlpatterns = [
     url(r'^api/v1/', include(router.urls)),

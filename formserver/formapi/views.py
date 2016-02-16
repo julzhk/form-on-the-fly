@@ -10,14 +10,28 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from formapi.models import Form, FormElement
 
+from rest_framework import permissions, viewsets
+from formapi.serializers import FormSerializer
+from django.http import HttpResponse
+from rest_framework import status, views
+import json
+from django.contrib.auth import authenticate, login
+from rest_framework import status, views
+from rest_framework.response import Response
+
+
 def form_api(request,form_id):
     if request.method == 'POST':
         print 'post'
         response = HttpResponse()
     else:
-        myform = Form.objects.first()
+        myform = Form.objects.get(id=int(form_id))
         elements = FormElement.objects.filter(form=myform)
-        data = [ele.to_json() for ele in elements]
+        elementdata = [ele.to_json() for ele in elements]
+        data = {'elements': elementdata,
+                'meta': {
+                    'formname':myform.name
+                }}
         response = JsonResponse(data, safe=False)
     response['Access-Control-Allow-Headers'] = 'Content-Type'
     response['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
@@ -37,3 +51,32 @@ def form_names_api(request):
     return response
 
 
+class IsAccountOwner(permissions.BasePermission):
+    def has_object_permission(self, request, view, account):
+        if request.user:
+            return account == request.user
+        return False
+
+class FormViewSet(viewsets.ModelViewSet):
+    lookup_field = 'id'
+    queryset = Form.objects.all()
+    serializer_class = FormSerializer
+
+    def get_permissions(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            return (permissions.AllowAny(),)
+
+        if self.request.method == 'POST':
+            return (permissions.AllowAny(),)
+        return (permissions.IsAuthenticated(), IsAccountOwner(),)
+
+    def create(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            Form.objects.create(**serializer.validated_data)
+            return HttpResponse(serializer.validated_data,
+                                status=status.HTTP_201_CREATED)
+        return HttpResponse({
+            'status': 'Bad request',
+            'message': 'Form could not be created with received data.'
+        }, status=status.HTTP_400_BAD_REQUEST)
