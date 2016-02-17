@@ -39,11 +39,11 @@
 
 
 <!--Show FORM page -->
-
-<ion-view view-title="Form">
-  <ion-content class="padding">
-    <div id="formcontainer" ng-controller="FormCtrl as ctrl">
+<div id="formcontainer" ng-controller="FormCtrl as ctrl">
+  <ion-view view-title='Form'>
+    <ion-content class="padding">
       <form name="ctrl.form" novalidate ng-submit="submit()">
+
         <formly-form model="ctrl.model" fields="ctrl.fields">
           <button type="submit" ng-click="formsubmit()" class="btn btn-default">Submit</button>
           <button type="submit" ng-click="clear()" class="btn btn-default">Clear</button>
@@ -57,10 +57,10 @@
               ng-click="goBack()"
               nav-direction="back">Go Back
       </button>
-    </div>
-  </ion-content>
-</ion-view>
 
+    </ion-content>
+  </ion-view>
+</div>
 </body>
 </html>
 

@@ -140,7 +140,25 @@ app.controller('FormListCtrl', function ($scope, $state, $stateParams,
     $scope.goBack = function(){
       $ionicHistory.goBack();
     };
+    $scope.viewData= function(n){
+      $state.go('formdata', {formid: n});
+  };
 
+
+});
+
+app.controller('FormDataCtrl', function ($scope, $state, $stateParams,formdataService,
+                                     $ionicHistory, $http, $ionicPlatform) {
+  var ctrl = this;
+  var vm = this;
+  formdataService.initDB();
+  $scope.goBack = function(){
+      $ionicHistory.goBack();
+  };
+  formdataService.getAllformdatas().then(function(formdatas) {
+        ctrl.formdata = formdatas;
+        $scope.formdata = formdatas;
+      });
 });
 
 app.controller('FormCtrl', function ($scope, $state, $stateParams,
@@ -205,8 +223,10 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
     ctrl.fetchContent = function (formid) {
       $http.get('http://127.0.0.1:8000/api/' + formid)
       .success(function(data, status, headers, config) {
+          console.log(data);
           vm.fields = data.elements;
           vm.formname= data.meta.formname;
+        console.log(vm.fields);
       })
       .error(function(error, status, headers, config) {
         console.log(status);
@@ -230,6 +250,11 @@ app.config(function($stateProvider, $urlRouterProvider) {
       url: '/formchooser/',
       templateUrl: 'formchooser.html',
       controller: 'FormListCtrl'
+    })
+    .state('formdata', {
+      url: '/formdata/',
+      templateUrl: 'formdata.html',
+      controller: 'FormDataCtrl'
     })
     .state('form', {
       url: '/form/:formid',

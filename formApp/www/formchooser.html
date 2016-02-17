@@ -44,11 +44,12 @@
         Choose the form you'd like to fill in
       </h3>
       <p>
-        These are the forms you have been subscribed to.
+        These are the forms available to you.
       </p>
       <ion-list>
-      <ion-item ng-repeat="item in formnames" ng-click="chooseForm(item.id)">
-        {{item.name}}
+      <ion-item ng-repeat="item in formnames">
+        <div ng-click="chooseForm(item.id)">{{item.name}} </div>
+        | <div ng-click="viewData(item.id)">Data</div>
       </ion-item>
     </ion-list>
       <button class="button icon ion-ios-arrow-back"

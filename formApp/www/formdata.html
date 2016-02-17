@@ -36,47 +36,29 @@
 </ion-nav-bar>
 
 <ion-nav-view></ion-nav-view>
-<!--LOGIN page -->
 
-
-  <ion-view view-title="First page">
+<!--Show FORM DATA page -->
+  <ion-view view-title="Show Form Data">
     <ion-content class="padding">
-      <h1 style="text-align: center;">
-        Login
-      </h1><br/>
-      <br/><br/>
-
-      <div class="list">
-  <label class="item item-input item-stacked-label">
-    <span class="input-label">Email</span>
-    <input type="text" ng-model="email" placeholder="julian2@example.com">
-  </label>
-  <label class="item item-input item-stacked-label">
-    <span class="input-label">Password</span>
-    <input type="text" ng-model="password" placeholder="pw1000">
-  </label>
-</div>
-<div class="card">
-  <div class="item item-text-wrap">
-    <a href="http://127.0.0.1:8000/register">
-    Need an account?
-      </a>
-  </div>
-</div>
-<div class="card">
-  <div class="item item-text-wrap">
-    <a href="http://127.0.0.1:8000/forgot">
-    Forgot Password?
-      </a>
-  </div>
-</div>
-      <p>
-        {{ error }}
-      </p>
-      <button class="button button-positive"
-              ng-click="login('email','password')">Submit
+      <h3 class="title">
+        Data previously entered
+      </h3>
+      <ion-list>
+      <ion-item ng-repeat="item in formdata">
+        {{ item }}
+      </ion-item>
+    </ion-list>
+      <button class="button icon ion-ios-arrow-back"
+              ng-click="goBack()"
+              nav-direction="back">Log out
       </button>
     </ion-content>
   </ion-view>
+
 </body>
 </html>
+
+
+
+
+
