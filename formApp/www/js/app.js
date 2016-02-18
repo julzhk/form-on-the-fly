@@ -19,7 +19,6 @@ function formdataService($q) {
     }
 
     function addformdata(formdata) {
-          console.log('clik add formdata');
           return $q.when(_db.post(formdata));
     };
 
@@ -119,7 +118,7 @@ app.factory('DataService', function ($http, URL) {
 });
 
 
-app.controller('FormListCtrl', function ($scope, $state, $stateParams,
+app.controller('FormListCtrl', function ($scope, $state, $stateParams,formdataService,
                                      $ionicHistory, $http, $ionicPlatform) {
   var ctrl = this;
   var vm = this;
@@ -169,7 +168,10 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
   vm.model = {};
 
   $scope.formsubmit = function() {
+    //todo : cannnot have form ele starting with _
+    vm.model['_formid'] = $stateParams.formid;
     console.log(vm.model);
+
     formdataService.addformdata(vm.model);
     post_data_server(vm.model);
   };
