@@ -48,8 +48,17 @@
       </p>
       <ion-list>
       <ion-item ng-repeat="item in formnames">
-        <div ng-click="chooseForm(item.id)">{{item.name}} </div>
-        | <div ng-click="viewData(item.id)">Data</div>
+        <div >{{item.name}} </div>
+        <div class="row">
+  <div class="col">
+    <button ng-click="chooseForm(item.id)"
+            class="button button-block button-positive">Capture Data</button>
+  </div>
+  <div class="col">
+    <button ng-click="viewData(item.id)"
+            class="button button-block button-positive">Review Data</button>
+  </div>
+</div>
       </ion-item>
     </ion-list>
       <button class="button icon ion-ios-arrow-back"
