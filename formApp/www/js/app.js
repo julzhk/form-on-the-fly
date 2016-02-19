@@ -169,7 +169,7 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
 
   $scope.formsubmit = function() {
     //todo : cannnot have form ele starting with _
-    vm.model['_formid'] = $stateParams.formid;
+    vm.model['formid'] = $stateParams.formid;
     console.log(vm.model);
 
     formdataService.addformdata(vm.model);
@@ -290,8 +290,5 @@ app.controller('LoginCtrl', function($scope, $state, $http, $stateParams, $ionic
         console.log("Error occured");
         $scope.error = 'Login error!';
       });
-
-
-
   }
 });
