@@ -1,4 +1,5 @@
 var db = new PouchDB('formdatas');
+
 function formdataService($q) {
     //pouchdb CRUD
     var _db;
@@ -116,31 +117,6 @@ app.factory('DataService', function ($http, URL) {
     };
 });
 
-app.controller('LoginCtrl', function($scope, $state, $http, $stateParams, $ionicHistory, ngPouch) {
-  $scope.goBack = function(){
-    $ionicHistory.goBack();
-  };
-  $scope.chooseForm= function(n){
-    $state.go('form', {formid: n});
-  };
-
-
-
-  $scope.login = function login(email, password) {
-
-    console.log(this.email);
-    console.log(this.password);
-    $http.post('http://127.0.0.1:8000/api/v1/auth/login/',{'email':this.email,'password':this.password})
-      .success(function(data, status, headers, config) {
-        $state.go('formchooser');
-      })
-      .error(function(error, status, headers, config) {
-        console.log(status);
-        console.log("Error occured");
-        $scope.error = 'Login error!';
-      });
-  }
-});
 
 app.controller('FormListCtrl', function ($scope, $state, $stateParams,formdataService,
                                      $ionicHistory, $http, $ionicPlatform) {
@@ -168,6 +144,20 @@ app.controller('FormListCtrl', function ($scope, $state, $stateParams,formdataSe
   };
 
 
+});
+
+app.controller('FormDataCtrl', function ($scope, $state, $stateParams,formdataService,
+                                     $ionicHistory, $http, $ionicPlatform) {
+  var ctrl = this;
+  var vm = this;
+  formdataService.initDB();
+  $scope.goBack = function(){
+      $ionicHistory.goBack();
+  };
+  formdataService.getAllformdatas().then(function(formdatas) {
+        ctrl.formdata = formdatas;
+        $scope.formdata = formdatas;
+      });
 });
 
 app.controller('FormCtrl', function ($scope, $state, $stateParams,
@@ -249,19 +239,7 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
     ctrl.fetchContent($stateParams.formid);
 });
 
-app.controller('FormDataCtrl', function ($scope, $state, $stateParams,formdataService,
-                                         $ionicHistory, $http, $ionicPlatform) {
-  var ctrl = this;
-  var vm = this;
-  formdataService.initDB();
-  $scope.goBack = function(){
-    $ionicHistory.goBack();
-  };
-  formdataService.getAllformdatas().then(function(formdatas) {
-    ctrl.formdata = formdatas;
-    $scope.formdata = formdatas;
-  });
-});
+var nameApp = app;
 
 app.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
@@ -288,4 +266,29 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
   $urlRouterProvider.otherwise("/");
 
+});
+
+
+app.controller('LoginCtrl', function($scope, $state, $http, $stateParams, $ionicHistory) {
+  $scope.goBack = function(){
+    $ionicHistory.goBack();
+  };
+  $scope.chooseForm= function(n){
+    $state.go('form', {formid: n});
+  };
+
+  $scope.login = function login(email, password) {
+
+    console.log(this.email);
+    console.log(this.password);
+    $http.post('http://127.0.0.1:8000/api/v1/auth/login/',{'email':this.email,'password':this.password})
+      .success(function(data, status, headers, config) {
+        $state.go('formchooser');
+      })
+      .error(function(error, status, headers, config) {
+        console.log(status);
+        console.log("Error occured");
+        $scope.error = 'Login error!';
+      });
+  }
 });
