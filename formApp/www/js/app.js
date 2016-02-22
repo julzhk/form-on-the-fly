@@ -1,4 +1,17 @@
 var db = new PouchDB('formdatas');
+db.createIndex({
+  index: {
+    fields: ['formid']
+  }
+}).then(function (result) {
+  // yo, a result
+  console.log('rses');
+  console.log(result);
+}).catch(function (err) {
+  // ouch, an error
+    console.log('err');
+  console.log(result);
+});
 
 function formdataService($q) {
     //pouchdb CRUD
@@ -142,22 +155,36 @@ app.controller('FormListCtrl', function ($scope, $state, $stateParams,formdataSe
     $scope.viewData= function(n){
       $state.go('formdata', {formid: n});
   };
-
-
 });
 
 app.controller('FormDataCtrl', function ($scope, $state, $stateParams,formdataService,
                                      $ionicHistory, $http, $ionicPlatform) {
   var ctrl = this;
   var vm = this;
+  var formid = $stateParams.formid;
   formdataService.initDB();
   $scope.goBack = function(){
       $ionicHistory.goBack();
   };
-  formdataService.getAllformdatas().then(function(formdatas) {
-        ctrl.formdata = formdatas;
-        $scope.formdata = formdatas;
-      });
+  //formdatas = formdataService.findformdatas(formid);
+  //ctrl.formdata = formdatas;
+  //$scope.formdata = formdatas;
+   db.find({
+          selector: {formid: {$eq: formid}},
+          fields: ['_id', '*'],
+        }).then(function (result) {
+          // yo, a result
+          console.log('finded');
+          console.log(result)
+          ctrl.formdata = result.docs;
+          $scope.formdata = result.docs;
+
+        }).catch(function (err) {
+          // ouch, an error
+          console.log(err);
+        });
+
+
 });
 
 app.controller('FormCtrl', function ($scope, $state, $stateParams,
@@ -184,7 +211,6 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
     console.log('restart');
     $ionicHistory.goBack();
   };
-
     $scope.goBack = function(){
     $ionicHistory.goBack();
   };
@@ -239,7 +265,7 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
     ctrl.fetchContent($stateParams.formid);
 });
 
-var nameApp = app;
+
 
 app.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
@@ -254,7 +280,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
       controller: 'FormListCtrl'
     })
     .state('formdata', {
-      url: '/formdata/',
+      url: '/formdata/:formid',
       templateUrl: 'formdata.html',
       controller: 'FormDataCtrl'
     })
