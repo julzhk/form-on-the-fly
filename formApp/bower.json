@@ -7,6 +7,12 @@
   "dependencies": {
     "api-check": "~7.5.5",
     "angular-formly": "~7.3.9",
-    "angular-formly-templates-ionic": "~1.2.2"
+    "angular-formly-templates-ionic": "~1.2.2",
+    "ng-pouch": "^0.0.1",
+    "requirejs": "^2.1.22",
+    "angular-pouchdb": "^4.1.0"
+  },
+  "resolutions": {
+    "pouchdb": "~5.2.1"
   }
 }

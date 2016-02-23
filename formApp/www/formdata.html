@@ -43,10 +43,21 @@
       <h3 class="title">
         Data previously entered
       </h3>
+      <table style="width: 50%;">
+        <thead>
+        <th ng-repeat="(key, value) in firstrow">
+          {{ key.charAt(0)  === "_" ? "" : key }}
+        </th>
+        </thead>
+        <tr ng-repeat="item in formdata">
+          <td ng-repeat="(key, value) in item">
+             {{ key.charAt(0)  === "_" ? "" : value }}
+          </td>
+      </tr>
+      </table>
       <ion-list>
-      <ion-item ng-repeat="item in formdata">
-        {{ item }}
-      </ion-item>
+
+
     </ion-list>
       <button class="button icon ion-ios-arrow-back"
               ng-click="goBack()"

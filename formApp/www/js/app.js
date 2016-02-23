@@ -169,23 +169,29 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,formdataSe
   //formdatas = formdataService.findformdatas(formid);
   //ctrl.formdata = formdatas;
   //$scope.formdata = formdatas;
-   db.find({
-          selector: {formid: {$eq: formid}},
-          fields: ['_id', '*'],
-        }).then(function (result) {
-          // yo, a result
-          console.log('finded');
-          console.log(result)
-          ctrl.formdata = result.docs;
-          $scope.formdata = result.docs;
 
-        }).catch(function (err) {
+  // see http://nolanlawson.github.io/pouchdb-find/
+  //https://github.com/nolanlawson/pouchdb-find
+
+  // Available selectors are $gt, $gte, $lt, $lte,
+  // $eq, $ne, $exists, $type, and more
+  db.createIndex({
+    index: {fields: ['formid']}
+  }).then(function () {
+    db.find({
+      selector: {formid: {$eq: formid }}
+    }).then(function(result){
+      console.log(result);
+      ctrl.formdata = result.docs;
+      $scope.formdata = result.docs;
+      $scope.firstrow = result.docs.slice(0,1)[0]
+      console.log($scope.formdata);
+    }).catch(function (err) {
           // ouch, an error
           console.log(err);
-        });
-
-
-});
+      });
+    });
+  });
 
 app.controller('FormCtrl', function ($scope, $state, $stateParams,
                                      $ionicHistory, $http, $ionicPlatform,
