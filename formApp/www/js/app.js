@@ -166,9 +166,23 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,formdataSe
   $scope.goBack = function(){
       $ionicHistory.goBack();
   };
-  //formdatas = formdataService.findformdatas(formid);
-  //ctrl.formdata = formdatas;
-  //$scope.formdata = formdatas;
+  ctrl.fetchFormElements = function (formid) {
+    // get the empty elements from API
+    // todo turn this to a service
+    $http.get('http://127.0.0.1:8000/api/' + formid)
+      .success(function(data, status, headers, config) {
+        console.log(data);
+        $scope.fields = data.elements;
+        $scope.formname= data.meta.formname;
+      console.log(vm.fields);
+    })
+    .error(function(error, status, headers, config) {
+      console.log(status);
+      console.log("Error occured");
+    });
+  };
+  console.log($stateParams.formid);
+  ctrl.fetchFormElements($stateParams.formid);
 
   // see http://nolanlawson.github.io/pouchdb-find/
   //https://github.com/nolanlawson/pouchdb-find
@@ -201,12 +215,10 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
   vm.model = {};
 
   $scope.formsubmit = function() {
-    //todo : cannnot have form ele starting with _
-    vm.model['formid'] = $stateParams.formid;
-    console.log(vm.model);
-
-    formdataService.addformdata(vm.model);
-    post_data_server(vm.model);
+      vm.model['formid'] = $stateParams.formid;
+      console.log(vm.model);
+      formdataService.addformdata(vm.model);
+      post_data_server(vm.model);
   };
 
   $scope.clear= function() {
@@ -217,10 +229,9 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
     console.log('restart');
     $ionicHistory.goBack();
   };
-    $scope.goBack = function(){
+  $scope.goBack = function(){
     $ionicHistory.goBack();
   };
-
 
   post_data_server= function (data) {
       var promise = $http({method: 'POST', url: 'http://127.0.0.1:8000/api/1', data: data});
@@ -241,22 +252,23 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
     });
     };
 
-
   // Initialize the database.
-    $ionicPlatform.ready(function() {
-        formdataService.initDB();
-        // Get all formdata records from the database.
-        formdataService.getAllformdatas().then(function(formdatas) {
-        ctrl.formdatas = formdatas;
-        $scope.formdatas = formdatas;
-      });
+  $ionicPlatform.ready(function() {
+      formdataService.initDB();
+      // Get all formdata records from the database.
+      formdataService.getAllformdatas().then(function(formdatas) {
+      ctrl.formdatas = formdatas;
+      $scope.formdatas = formdatas;
     });
+  });
 
     //render content
     ctrl.content = [];
     ctrl.fetchContent = function (formid) {
+      // get the empty elements from API
+      // todo turn this to a service
       $http.get('http://127.0.0.1:8000/api/' + formid)
-      .success(function(data, status, headers, config) {
+        .success(function(data, status, headers, config) {
           console.log(data);
           vm.fields = data.elements;
           vm.formname= data.meta.formname;
@@ -267,7 +279,7 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
         console.log("Error occured");
       });
     };
-  console.log($stateParams.formid);
+    console.log($stateParams.formid);
     ctrl.fetchContent($stateParams.formid);
 });
 
