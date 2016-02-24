@@ -1,1 +1,17 @@
 /* Empty. Add your own CSS if you like */
+
+table.formdata{
+  background-color: lightblue;
+  width: 80%;
+  margin: auto;
+  text-align: center;
+}
+
+table.formdata td {
+  height: 1.3em;
+
+}
+
+table.formdata th {
+  font-weight: bold;
+}
