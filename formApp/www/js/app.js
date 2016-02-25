@@ -13,6 +13,26 @@ db.createIndex({
   console.log(result);
 });
 
+db.getIndexes().then(function (result) {
+  console.log('get indexes');
+  console.log(result);
+}).catch(function (err) {
+  // ouch, an error
+  console.log('get indexes err');
+});
+
+db.find({
+  selector: {formid: {$eq: '1'}}
+}).then(function (result) {
+  // yo, a result
+  console.log('finded');
+  console.log(result);
+}).catch(function (err) {
+  // ouch, an error
+  console.log(err);
+
+});
+
 function formdataService($q) {
     //pouchdb CRUD
     var _db;
@@ -21,6 +41,7 @@ function formdataService($q) {
     return {
         initDB: initDB,
         getAllformdatas: getAllformdatas,
+        findformdatas: findformdatas,
         addformdata: addformdata,
         updateformdata: updateformdata,
         deleteformdata: deleteformdata,
@@ -49,6 +70,20 @@ function formdataService($q) {
     function deleteformdata(formdata) {
         return $q.when(_db.remove(formdata));
     };
+
+    function findformdatas(formid){
+        db.find({
+          selector: {formid: {$eq: formid}}
+        }).then(function (result) {
+          // yo, a result
+          console.log('finded');
+          console.log(result)
+          return result.docs
+        }).catch(function (err) {
+          // ouch, an error
+          console.log(err);
+        });
+    }
 
     function getAllformdatas() {
         if (!_pouchdb_rows) {
