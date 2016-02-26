@@ -357,6 +357,9 @@ app.controller('LoginCtrl', function($scope, $state, $http, $stateParams, $ionic
   };
 
   $scope.login = function login(email, password) {
+    // to do reimplent
+    $state.go('formchooser');
+    return
 
     console.log(this.email);
     console.log(this.password);
