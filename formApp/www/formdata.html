@@ -44,11 +44,13 @@
       </h3>
       <table class="formdata">
         <thead>
+        <th>ID</th>
         <th ng-repeat="key in fields">
           {{ key.templateOptions.label }}
         </th>
         </thead>
-        <tr ng-repeat="item in formdata">
+        <tr ng-repeat="item in formdata" class="zebra-{{$index % 2 }}">
+          <td>{{$index + 1}}</td>
           <td ng-repeat="key in fields">
             {{ item[key.key] }}
           </td>

@@ -11,6 +11,7 @@
   <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
   <link href="css/ionic.app.css" rel="stylesheet">
   -->
+  <script src="lib/angular-animate/angular-animate.js"></script>
 
   <script src="js/pouchdb-5.2.1.min.js"></script>
   <!-- ionic/angularjs js -->
@@ -44,10 +45,13 @@
     <ion-content class="padding">
       <form name="ctrl.form" novalidate ng-submit="submit()">
 
-        <formly-form model="ctrl.model" fields="ctrl.fields">
+        <formly-form model="ctrl.model" fields="ctrl.fields" >
+      <div ng-if="datasubmitted==False" class="fade">
           <button type="submit" ng-click="formsubmit()" class="btn btn-default">Submit</button>
           <button type="submit" ng-click="clear()" class="btn btn-default">Clear</button>
+      </div>
         </formly-form>
+
       </form>
       {{ success }}
       <!--<pre> div ng-repeat="n in formdatas">{{n}}</div></pre>-->
@@ -55,6 +59,9 @@
               ng-click="goBack()"
               nav-direction="back">Go Back
       </button>
+      <div ng-if="datasubmitted" class="fade">
+         Data submitted
+      </div>
 
     </ion-content>
   </ion-view>
