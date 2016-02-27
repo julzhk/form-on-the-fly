@@ -136,6 +136,12 @@ function formdataService($q) {
 }
 
 var app = angular.module('starter', ['ionic', 'formlyIonic','ngAnimate']);
+app.factory('DataSingleton', function () {
+    // share a global state between controllers
+    // http://stackoverflow.com/questions/21919962/share-data-between-angularjs-controllers
+    return {'user_email': ''};
+});
+
 app.factory('formdataService', formdataService);
 app.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -170,6 +176,7 @@ app.controller('FormListCtrl', function ($scope, $state, $stateParams,formdataSe
                                      $ionicHistory, $http, $ionicPlatform) {
   var ctrl = this;
   var vm = this;
+
     ctrl.fetchContent = function () {
       $http.get('http://127.0.0.1:8000/api/v1/forms/')
       .success(function(data, status, headers, config) {
@@ -193,7 +200,7 @@ app.controller('FormListCtrl', function ($scope, $state, $stateParams,formdataSe
 });
 
 app.controller('FormDataCtrl', function ($scope, $state, $stateParams,formdataService,
-                                     $ionicHistory, $http, $ionicPlatform) {
+                                     $ionicHistory, $http, $ionicPlatform, DataSingleton) {
   var ctrl = this;
   var vm = this;
   var formid = $stateParams.formid;
@@ -209,7 +216,7 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,formdataSe
         console.log(data);
         $scope.fields = data.elements;
         $scope.formname= data.meta.formname;
-      console.log(vm.fields);
+        console.log(vm.fields);
     })
     .error(function(error, status, headers, config) {
       console.log(status);
@@ -244,16 +251,18 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,formdataSe
 
 app.controller('FormCtrl', function ($scope, $state, $stateParams,
                                      $ionicHistory, $http, $ionicPlatform,
-                                     DataService, formdataService) {
+                                     DataService, formdataService, DataSingleton) {
   var ctrl = this;
   var vm = this;
   vm.model = {};
 
   $scope.formsubmit = function() {
     vm.model['formid'] = $stateParams.formid;
+    vm.model['user_email'] = DataSingleton.user_email;
     console.log(vm.model);
     formdataService.addformdata(vm.model);
-    post_data_server(vm.model);
+    //todo not implemented yet
+    //post_data_server(vm.model);
     $scope.datasubmitted = true;
   };
 
@@ -349,7 +358,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
 });
 
 
-app.controller('LoginCtrl', function($scope, $state, $http, $stateParams, $ionicHistory) {
+app.controller('LoginCtrl', function($scope, $state, $http, $stateParams, $ionicHistory, DataSingleton) {
   $scope.goBack = function(){
     $ionicHistory.goBack();
   };
@@ -358,14 +367,11 @@ app.controller('LoginCtrl', function($scope, $state, $http, $stateParams, $ionic
   };
 
   $scope.login = function login(email, password) {
-    // to do reimplent
-    $state.go('formchooser');
-    return
-
     console.log(this.email);
     console.log(this.password);
     $http.post('http://127.0.0.1:8000/api/v1/auth/login/',{'email':this.email,'password':this.password})
       .success(function(data, status, headers, config) {
+        DataSingleton.user_email= data.email;
         $state.go('formchooser');
       })
       .error(function(error, status, headers, config) {
