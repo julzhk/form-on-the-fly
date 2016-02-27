@@ -135,7 +135,7 @@ function formdataService($q) {
     }
 }
 
-var app = angular.module('starter', ['ionic', 'formlyIonic']);
+var app = angular.module('starter', ['ionic', 'formlyIonic','ngAnimate']);
 app.factory('formdataService', formdataService);
 app.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -250,10 +250,11 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
   vm.model = {};
 
   $scope.formsubmit = function() {
-      vm.model['formid'] = $stateParams.formid;
-      console.log(vm.model);
-      formdataService.addformdata(vm.model);
-      post_data_server(vm.model);
+    vm.model['formid'] = $stateParams.formid;
+    console.log(vm.model);
+    formdataService.addformdata(vm.model);
+    post_data_server(vm.model);
+    $scope.datasubmitted = true;
   };
 
   $scope.clear= function() {
