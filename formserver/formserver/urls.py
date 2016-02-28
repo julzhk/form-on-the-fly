@@ -22,6 +22,7 @@ from authentication.views import AccountViewSet
 from authentication.views import LoginView
 
 from formapi.views import FormViewSet
+from collect_data.views import post_data
 router = routers.SimpleRouter()
 router.register(r'accounts', AccountViewSet)
 router.register(r'forms', FormViewSet)
@@ -31,6 +32,7 @@ urlpatterns = [
     url(r'^api/v1/auth/login/$', LoginView.as_view(), name='login'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/names', form_names_api),
+    url(r'^api/post', post_data),
     url(r'^api/(?P<form_id>\d+)', form_api),
 
 ]

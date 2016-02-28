@@ -273,9 +273,14 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
     vm.model['formid'] = $stateParams.formid;
     vm.model['user_email'] = DataSingleton.user_email;
     console.log(vm.model);
-    formdataService.addformdata(vm.model);
-    //todo not implemented yet
-    //post_data_server(vm.model);
+    r = formdataService.addformdata(vm.model);
+    console.log(r);
+    r.success(function (z) {
+      console.log('form added!');
+      console.log(z);
+
+    }
+    post_data_server(vm.model);
     $scope.datasubmitted = true;
   };
 
@@ -292,7 +297,7 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
   };
 
   post_data_server= function (data) {
-      var promise = $http({method: 'POST', url: 'http://127.0.0.1:8000/api/1', data: data});
+      var promise = $http({method: 'POST', url: 'http://127.0.0.1:8000/api/post/', data: data});
       promise.success(function (data, status, headers, config, statusText) {
         // this callback will be called asynchronously
         // when the response is available
