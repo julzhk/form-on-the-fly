@@ -1,11 +1,12 @@
-var db = new PouchDB('formdatas');
+const POUCH_DB_NAME = "formdata";
+var db = new PouchDB(POUCH_DB_NAME);
 db.createIndex({
   index: {
     fields: ['formid']
   }
 }).then(function (result) {
   // yo, a result
-  console.log('rses');
+  console.log('formid index');
   console.log(result);
 }).catch(function (err) {
   // ouch, an error
@@ -49,7 +50,7 @@ function formdataService($q) {
     };
     function initDB() {
         // Creates the database or opens if it already exists
-        _db = new PouchDB('formdatas', {adapter: 'websql'});
+        _db = new PouchDB(POUCH_DB_NAME, {adapter: 'websql'});
     }
 
     function addformdata(formdata) {
@@ -109,6 +110,17 @@ function formdataService($q) {
         }
     };
 
+    function destroy(){
+      _db.destroy().then(function () {
+        // database destroyed
+        console.log('destroyed');
+      }).catch(function (err) {
+        // error occurred
+        console.log('destroy err');
+      })
+
+    }
+
     function onDatabaseChange(change) {
         var index = findIndex(_pouchdb_rows, change.id);
         var formdata = _pouchdb_rows[index];
@@ -139,7 +151,7 @@ var app = angular.module('starter', ['ionic', 'formlyIonic','ngAnimate']);
 app.factory('DataSingleton', function () {
     // share a global state between controllers
     // http://stackoverflow.com/questions/21919962/share-data-between-angularjs-controllers
-    return {'user_email': ''};
+    return {'user_email': 'anon'};
 });
 
 app.factory('formdataService', formdataService);
@@ -224,6 +236,7 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,formdataSe
     });
   };
   console.log($stateParams.formid);
+  // populate $scope.fields:
   ctrl.fetchFormElements($stateParams.formid);
 
   // see http://nolanlawson.github.io/pouchdb-find/
