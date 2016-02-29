@@ -23,6 +23,10 @@ from authentication.views import LoginView
 
 from formapi.views import FormViewSet
 from collect_data.views import post_data
+from django.conf import settings
+from django.conf.urls.static import static
+from form_generator.views import form_generator
+
 router = routers.SimpleRouter()
 router.register(r'accounts', AccountViewSet)
 router.register(r'forms', FormViewSet)
@@ -32,7 +36,8 @@ urlpatterns = [
     url(r'^api/v1/auth/login/$', LoginView.as_view(), name='login'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/names', form_names_api),
+    url(r'^formgen', form_generator),
     url(r'^api/post', post_data),
     url(r'^api/(?P<form_id>\d+)', form_api),
 
-]
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
