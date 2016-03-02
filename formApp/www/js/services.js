@@ -1,3 +1,9 @@
+function DataSingleton() {
+    // share a global state between controllers
+    // http://stackoverflow.com/questions/21919962/share-data-between-angularjs-controllers
+    return {'user_email': 'anon'};
+}
+
 function formdataService($q) {
     //pouchdb CRUD
     var _db;
@@ -110,3 +116,5 @@ function formdataService($q) {
       return low;
     }
 }
+
+
