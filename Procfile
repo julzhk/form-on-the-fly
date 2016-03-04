@@ -1,1 +1,1 @@
-web: gunicorn --pythonpath formfactory/formserver formserver.wsgi
+web: gunicorn --pythonpath formserver wsgi.py
