@@ -1,1 +1,1 @@
-web: gunicorn formserver.wsgi --log-file -
+web: gunicorn --pythonpath app formserver.wsgi
