@@ -1,1 +1,1 @@
-web: gunicorn formserver/formserver.wsgi --log-file -
+web: gunicorn formserver.formserver.wsgi --log-file -
