@@ -1,1 +1,1 @@
-web: gunicorn --pythonpath formserver 'formserver.wsgi' --log-level debug
+web: gunicorn formserver.wsgi --log-file -
