@@ -45,7 +45,7 @@ INSTALLED_APPS = (
     'authentication',
     'formapi',
     'collect_data',
-    'form_generator',
+    # 'form_generator',
     'djangobower',
 )
 
