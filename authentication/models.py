@@ -39,8 +39,16 @@ class Account(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     def get_full_name(self):
-        return ' '.join([self.first_name, self.last_name])
+        return u'%s %s ' % (self.first_name, self.last_name)
 
     def get_short_name(self):
         return self.first_name
 
+    def save(self, *args, **kwargs):
+        try:
+            oldpw = Account.objects.get(id=self.id).password
+        except Account.DoesNotExist:
+            oldpw = '??????'
+        if self.password != oldpw:
+            self.set_password(self.password)
+        return super(Account, self).save(*args, **kwargs)
