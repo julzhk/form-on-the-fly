@@ -74,8 +74,9 @@ WSGI_APPLICATION = 'formserver.wsgi.application'
 
 
 # Database
-# https://devcenter.heroku.com/articles/getting-started-with-python#provision-a-database
+# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
+DATABASES = {}
 DATABASES['default'] =  dj_database_url.config()
 
 
