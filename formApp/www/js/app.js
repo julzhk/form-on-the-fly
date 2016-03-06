@@ -1,8 +1,8 @@
 const POUCH_DB_NAME = "formdata";
-const POST_END_POINT= 'http://127.0.0.1:8000/api/post/';
-const GET_ENDPOINT= 'http://127.0.0.1:8000/api/';
-const LOGIN_POST_ENDPOINT= 'http://127.0.0.1:8000/api/v1/auth/login/';
-
+const POST_END_POINT= DB_END_POINT + '/api/post/';
+const GET_ENDPOINT= DB_END_POINT + '/api/';
+const LOGIN_POST_ENDPOINT= DB_END_POINT + '/api/v1/auth/login/';
+const FORMS_LIST_ENDPOINT= DB_END_POINT + '/api/v1/forms/';
 var db = new PouchDB(POUCH_DB_NAME);
 db.createIndex({
   index: {
@@ -66,7 +66,7 @@ app.controller('FormListCtrl', function ($scope, $state, $stateParams,
   var vm = this;
 
   ctrl.fetchContent = function () {
-    $http.get('http://127.0.0.1:8000/api/v1/forms/')
+    $http.get(FORMS_LIST_ENDPOINT)
       .success(function (data, status, headers, config) {
         $scope.formnames = data;
       })
