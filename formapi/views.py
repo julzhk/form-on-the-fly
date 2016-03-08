@@ -8,7 +8,7 @@ from django.forms import ModelForm
 import json
 from django.shortcuts import render
 from django.http import JsonResponse
-from formapi.models import Form, FormElement
+from formapi.models import Form
 
 from rest_framework import permissions, viewsets
 from formapi.serializers import FormSerializer
@@ -26,7 +26,8 @@ def form_api(request,form_id):
         response = HttpResponse()
     else:
         myform = Form.objects.get(id=int(form_id))
-        elements = FormElement.objects.filter(form=myform)
+        # elements = FormElement.objects.filter(form=myform)
+        elements = "FormElement.objects.filter(form=myform)"
         elementdata = [ele.to_json() for ele in elements]
         data = {'elements': elementdata,
                 'meta': {

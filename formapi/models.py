@@ -1,40 +1,62 @@
 import os
 from django.db import models
 
+from django.db import models
+# from django.contrib.contenttypes.fields import GenericForeignKey
+# from django.contrib.contenttypes.models import ContentType
+
+from django.utils.deconstruct import deconstructible
+
+
 class Form(models.Model):
     name = models.CharField(max_length=255)
+
     def __unicode__(self):
         return 'form: %s' % (self.name)
 
+class InputElement(models.Model):
+    order = models.IntegerField(default=0)
+    label = models.CharField(max_length=255,default='label')
+    placeholder = models.CharField(max_length=255,default='placeholder',blank=True)
+    hidden = models.BooleanField(default=False)
+    form = models.ForeignKey(Form,default=Form.objects.first())
 
-class FormElement(models.Model):
-    form = models.ForeignKey(Form)
-    order= models.IntegerField(auto_created=True)
-    key = models.CharField(max_length=255, unique=True,default='', help_text='add a hidden field with '
-                                                                        'key=user_email to auto-capture contributor '
-                                                                        'email address')
-    type = models.CharField(max_length=32, default='input',
-                                            choices=[('input', 'input'),
-                                                    ('checkbox', 'checkbox'),
-                                                    ('password', 'password')
-                                                    ])
-    label= models.CharField(max_length=255,default='label')
-    placeholder= models.CharField(max_length=255,default='placeholder',blank=True)
-    hidden= models.BooleanField(default=False)
+class CheckboxElement(models.Model):
+    order = models.IntegerField(default=0)
+    label = models.CharField(max_length=255,default='label')
+    form = models.ForeignKey(Form, default=Form.objects.first())
 
-    def to_json(self):
-        return {
-            "key": self.key,
-            "type": self.type,
-            "hide": self.hidden,
-            "templateOptions": {
-                "label": self.label,
-                "placeholder": self.placeholder,
-            }
-        }
+class CheckboxItem(models.Model):
+    order = models.IntegerField(default=0)
+    label = models.CharField(max_length=255,default='label')
+    choiceelement = models.ForeignKey(CheckboxElement)
 
-    class Meta:
-        ordering = ['order']
+class TextItem(models.Model):
+    order = models.IntegerField(default=0)
+    text = models.TextField()
+    form = models.ForeignKey(Form,default=Form.objects.first())
 
-    def __unicode__(self):
-        return '%s %s %s' % (self.form, self.type, self.label)
+class RadioElement(models.Model):
+    order = models.IntegerField(default=0)
+    label = models.CharField(max_length=255,default='label')
+    form = models.ForeignKey(Form,default=Form.objects.first())
+
+class RadioItem(models.Model):
+    order = models.IntegerField(default=0)
+    label = models.CharField(max_length=255,default='label')
+    selected = models.BooleanField(default=False)
+    radioelement = models.ForeignKey(RadioElement)
+
+class DropdownElement(models.Model):
+    order = models.IntegerField(default=0)
+    label = models.CharField(max_length=255,default='label')
+    form = models.ForeignKey(Form,default=Form.objects.first())
+
+class DropdownItem(models.Model):
+    order = models.IntegerField(default=0)
+    label = models.CharField(max_length=255,default='label')
+    value = models.CharField(max_length=255,default='label')
+    dropdown = models.ForeignKey(DropdownElement)
+    selected = models.BooleanField(default=False)
+
+
