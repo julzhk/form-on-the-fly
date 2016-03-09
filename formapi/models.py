@@ -1,13 +1,6 @@
 import os
 from django.db import models
 
-from django.db import models
-# from django.contrib.contenttypes.fields import GenericForeignKey
-# from django.contrib.contenttypes.models import ContentType
-
-from django.utils.deconstruct import deconstructible
-
-
 class Form(models.Model):
     name = models.CharField(max_length=255)
 
@@ -20,6 +13,18 @@ class InputElement(models.Model):
     placeholder = models.CharField(max_length=255,default='placeholder',blank=True)
     hidden = models.BooleanField(default=False)
     form = models.ForeignKey(Form,default=Form.objects.first())
+
+    def to_json(self):
+            return {
+                "key": self.label,
+                "type": 'input',
+                "hide": self.hidden,
+                "templateOptions": {
+                    "label": self.label,
+                    "placeholder": self.placeholder,
+                }
+            }
+
 
 class CheckboxElement(models.Model):
     order = models.IntegerField(default=0)

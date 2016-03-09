@@ -41,7 +41,6 @@ def form_api(request,form_id):
 
 
 def form_names_api(request):
-    print request
     # form_id
     forms = Form.objects.all()
     data = [{'name':myform.name,'id':myform.id} for myform in forms]
