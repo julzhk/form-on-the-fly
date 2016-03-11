@@ -18,26 +18,36 @@ import json
 from django.contrib.auth import authenticate, login
 from rest_framework import status, views
 from rest_framework.response import Response
-
+from formapi.models import InputElement, CheckboxElement
 
 def form_api(request,form_id):
     if request.method == 'POST':
         print 'post'
         response = HttpResponse()
     else:
+        data = []
         myform = Form.objects.get(id=int(form_id))
-        # elements = FormElement.objects.filter(form=myform)
-        elements = "FormElement.objects.filter(form=myform)"
-        elementdata = [ele.to_json() for ele in elements]
-        data = {'elements': elementdata,
-                'meta': {
-                    'formname':myform.name
-                }}
-        response = JsonResponse(data, safe=False)
+        for mdl in InputElement, CheckboxElement:
+            elements = mdl.objects.filter(form=myform)
+            data += [ele.to_json() for ele in elements]
+        data +=[{
+              'key': 'checked',
+              'type': 'checkbox',
+              'templateOptions': {
+                'label': 'Check me out2'
+              }
+            }]
+
+        data = {'elements': data,
+            'meta': {
+                'formname': myform.name
+            }}
+    response = JsonResponse(data, safe=False)
     response['Access-Control-Allow-Headers'] = 'Content-Type'
     response['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
     response['Access-Control-Allow-Origin'] = '*'
     return response
+
 
 
 def form_names_api(request):

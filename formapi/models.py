@@ -31,37 +31,86 @@ class CheckboxElement(models.Model):
     label = models.CharField(max_length=255,default='label')
     form = models.ForeignKey(Form, default=Form.objects.first())
 
+    def to_json(self):
+        return {
+              'key': 'checked',
+              'type': 'checkbox',
+              'templateOptions': {
+                'label': 'Check me out'
+              }
+            }
+        return {
+              'key': 'roles',
+              'type': 'multiCheckbox',
+              'templateOptions': {
+                'label': 'Roles',
+                'options': [
+                    {'id': 1,
+                     'title':"Administrator"
+                     },
+                    {'id': 2,
+                     'title':"User"
+                     }
+                ],
+                'valueProp': 'id',
+                'labelProp': 'title'
+              }
+            }
+
+
 class CheckboxItem(models.Model):
     order = models.IntegerField(default=0)
     label = models.CharField(max_length=255,default='label')
     choiceelement = models.ForeignKey(CheckboxElement)
+
 
 class TextItem(models.Model):
     order = models.IntegerField(default=0)
     text = models.TextField()
     form = models.ForeignKey(Form,default=Form.objects.first())
 
+
 class RadioElement(models.Model):
     order = models.IntegerField(default=0)
     label = models.CharField(max_length=255,default='label')
     form = models.ForeignKey(Form,default=Form.objects.first())
 
+
+    def to_json(self):
+            return {
+                "key": self.label,
+                "type": 'radio',
+                "hide": self.hidden,
+                "templateOptions": {
+                    "label": self.label,
+                    "placeholder": self.placeholder,
+                }
+            }
 class RadioItem(models.Model):
     order = models.IntegerField(default=0)
     label = models.CharField(max_length=255,default='label')
     selected = models.BooleanField(default=False)
     radioelement = models.ForeignKey(RadioElement)
 
+
 class DropdownElement(models.Model):
     order = models.IntegerField(default=0)
     label = models.CharField(max_length=255,default='label')
     form = models.ForeignKey(Form,default=Form.objects.first())
-
+    def to_json(self):
+            return {
+                "key": self.label,
+                "type": 'select',
+                "hide": self.hidden,
+                "templateOptions": {
+                    "label": self.label,
+                    "placeholder": self.placeholder,
+                }
+            }
 class DropdownItem(models.Model):
     order = models.IntegerField(default=0)
     label = models.CharField(max_length=255,default='label')
     value = models.CharField(max_length=255,default='label')
     dropdown = models.ForeignKey(DropdownElement)
     selected = models.BooleanField(default=False)
-
 
