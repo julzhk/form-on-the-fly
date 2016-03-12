@@ -18,7 +18,10 @@ import json
 from django.contrib.auth import authenticate, login
 from rest_framework import status, views
 from rest_framework.response import Response
-from formapi.models import InputElement, CheckboxElement,TextElement,RadioElement
+from formapi.models import (InputElement, CheckboxElement,
+                            TextElement,RadioElement,DropdownElement,
+                            RangeElement
+                            )
 
 def form_api(request,form_id):
     if request.method == 'POST':
@@ -27,47 +30,9 @@ def form_api(request,form_id):
     else:
         data = []
         myform = Form.objects.get(id=int(form_id))
-        for mdl in InputElement, TextElement, CheckboxElement, RadioElement:
+        for mdl in InputElement, TextElement, CheckboxElement, RadioElement,DropdownElement,RangeElement:
             elements = mdl.objects.filter(form=myform)
             data += [ele.to_json() for ele in elements]
-        # data +=[{
-        #       'key': 'checkThis',
-        #       'type': 'checkbox',
-        #       'templateOptions': {
-        #         'label': 'Check me out 2 ',
-        #       }
-        #     }]
-        # data += [{ "key": "volumeLevel",
-        #            "type": "range",
-        #            "templateOptions": {
-        #                "label": "Volume",
-        #                "rangeClass": "calm",
-        #                "min": "0",
-        #                "max": "100",
-        #                "step": "5",
-        #                "value": "25",
-        #                "minIcon": "ion-volume-low",
-        #                "maxIcon": "ion-volume-high"
-        #            }
-        #            }
-        #          ]
-        # data += [{ "key": "triedEmber",
-        #            "type": "radio",
-        #            "templateOptions": {
-        #                "required":True,
-        #                "label": "Have you tried EmberJs yet?",
-        #                "options": [
-        #                    { "value": "A", "text": "A!", "icon": "ion-home" },
-        #                    { "value": "B", "text": "B+", },
-        #                    { "value": "C", "text": "C-", }
-        #                ]
-        #            }
-        #            }
-        #          ]
-        #
-        # data +=[{ "key": "marvel3", "type": "select", "templateOptions": { "label": "Select with custom name/value/group", "options": [{ "label": "Iron Man", "id": "iron_man", "gender": "Male" }, { "label": "Captain America", "id": "captain_america", "gender": "Male" }, { "label": "Black Widow", "id": "black_widow", "gender": "Female" }, { "label": "Hulk", "id": "hulk", "gender": "Male" }, { "label": "Captain Marvel", "id": "captain_marvel", "gender": "Female" }], "groupProp": "gender", "valueProp": "id", "labelProp": "label" } }]
-        # data +=[ { "type": "textarea", "key": "about", "templateOptions": { "placeholder": "Cats make me smile", "rows": 4 } } ]
-        # data +=[]
 
         data = {'elements': data,
             'meta': {
