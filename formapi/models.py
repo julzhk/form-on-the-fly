@@ -1,6 +1,5 @@
 import os
 from django.db import models
-
 class Form(models.Model):
     name = models.CharField(max_length=255)
 
@@ -20,6 +19,8 @@ class InputElement(models.Model):
                 "type": 'input',
                 "hide": self.hidden,
                 "templateOptions": {
+                    "icon": "ion-person",
+                     "iconPlaceholder": True,
                     "label": self.label,
                     "placeholder": self.placeholder,
                 }
@@ -33,41 +34,27 @@ class CheckboxElement(models.Model):
 
     def to_json(self):
         return {
-              'key': 'checked',
+              'key': self.label,
               'type': 'checkbox',
               'templateOptions': {
-                'label': 'Check me out'
-              }
-            }
-        return {
-              'key': 'roles',
-              'type': 'multiCheckbox',
-              'templateOptions': {
-                'label': 'Roles',
-                'options': [
-                    {'id': 1,
-                     'title':"Administrator"
-                     },
-                    {'id': 2,
-                     'title':"User"
-                     }
-                ],
-                'valueProp': 'id',
-                'labelProp': 'title'
+                'label': self.label,
               }
             }
 
 
-class CheckboxItem(models.Model):
+class TextElement(models.Model):
     order = models.IntegerField(default=0)
-    label = models.CharField(max_length=255,default='label')
-    choiceelement = models.ForeignKey(CheckboxElement)
-
-
-class TextItem(models.Model):
-    order = models.IntegerField(default=0)
-    text = models.TextField()
+    placeholder = models.TextField()
     form = models.ForeignKey(Form,default=Form.objects.first())
+
+    def to_json(self):
+        return { "type": "textarea",
+                 "key": self.placeholder,
+                 "templateOptions": {
+                     "type": "text",
+                     "placeholder": self.placeholder,
+                     "rows":6
+                 } }
 
 
 class RadioElement(models.Model):
@@ -77,21 +64,27 @@ class RadioElement(models.Model):
 
 
     def to_json(self):
-            return {
-                "key": self.label,
-                "type": 'radio',
-                "hide": self.hidden,
-                "templateOptions": {
-                    "label": self.label,
-                    "placeholder": self.placeholder,
-                }
-            }
+        options = RadioItem.objects.filter(radioelement=self)
+        option_data = [opt.to_json() for opt in options]
+        return { "key": "triedEmber",
+                 "type": "radio",
+                 "templateOptions": {
+                     "label": "Have you tried EmberJs yet?",
+                     "options": option_data
+                    }
+                 }
+
+
 class RadioItem(models.Model):
     order = models.IntegerField(default=0)
-    label = models.CharField(max_length=255,default='label')
-    selected = models.BooleanField(default=False)
+    text = models.CharField(max_length=255,default='label')
     radioelement = models.ForeignKey(RadioElement)
 
+    def to_json(self):
+        return { "value": self.text,
+                 "text": self.text,
+                 "icon": "ion-home"
+                 }
 
 class DropdownElement(models.Model):
     order = models.IntegerField(default=0)
