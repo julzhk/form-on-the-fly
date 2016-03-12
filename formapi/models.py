@@ -95,29 +95,41 @@ class DropdownElement(models.Model):
     label = models.CharField(max_length=255,default='label')
     form = models.ForeignKey(Form,default=Form.objects.first())
     def to_json(self):
-        return { "key": "marvel3",
+        options = DropdownItem.objects.filter(dropdown=self)
+        option_data = [opt.to_json() for opt in options]
+
+        return { "key": self.label,
                  "type": "select",
                  "templateOptions": {
-                     "label": "Select with custom name/value/group",
-                     "options": [
-                         { "label": "Iron Man", "id": "iron_man", "gender": "Male" },
-                         { "label": "Captain America", "id": "captain_america", "gender": "Male" },
-                         { "label": "Black Widow", "id": "black_widow", "gender": "Female" },
-                         { "label": "Hulk", "id": "hulk", "gender": "Male" },
-                         { "label": "Captain Marvel", "id": "captain_marvel", "gender": "Female" }
-                        ],
-                     "groupProp": "gender",
+                     "label": self.label,
+                     "options": option_data,
+                     "groupProp": "category",
                      "valueProp": "id",
                      "labelProp": "label"
                  }
                  }
 
+class DropdownItemCategory(models.Model):
+    order = models.IntegerField(default=0)
+    label = models.CharField(max_length=255,default='label')
+
+    def to_json(self):
+        return u"%s" % self.label
+
+
 class DropdownItem(models.Model):
     order = models.IntegerField(default=0)
     label = models.CharField(max_length=255,default='label')
     value = models.CharField(max_length=255,default='label')
+    category = models.ForeignKey(DropdownItemCategory)
     dropdown = models.ForeignKey(DropdownElement)
     selected = models.BooleanField(default=False)
+
+    def to_json(self):
+        return { "label": self.label,
+                 "id": self.id,
+                 "category": self.category.to_json()
+                 }
 
 
 class RangeElement(models.Model):
