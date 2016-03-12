@@ -45,6 +45,7 @@ class CheckboxElement(models.Model):
 class TextElement(models.Model):
     order = models.IntegerField(default=0)
     placeholder = models.TextField()
+    label = models.CharField(max_length=255,default='label')
     form = models.ForeignKey(Form,default=Form.objects.first())
 
     def to_json(self):
@@ -52,6 +53,7 @@ class TextElement(models.Model):
                  "key": self.placeholder,
                  "templateOptions": {
                      "type": "text",
+                     "label":self.label,
                      "placeholder": self.placeholder,
                      "rows":6
                  } }
