@@ -48,12 +48,20 @@
         <th ng-repeat="key in fields">
           {{ key.templateOptions.label }}
         </th>
+        <th>del</th>
         </thead>
         <tr ng-repeat="item in formdata" class="zebra-{{$index % 2 }}">
           <td>{{$index + 1}}</td>
           <td ng-repeat="key in fields">
             {{ item[key.key] }}
           </td>
+            <td>
+               <a class="button"
+              ng-click="login('email','password')">
+        x
+      </a>
+
+            </td>
       </tr>
       </table>
       <ion-list>
