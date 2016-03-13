@@ -26,17 +26,6 @@ db.getIndexes().then(function (result) {
   console.log('get indexes err');
 });
 
-db.find({
-  selector: {formid: {$eq: '1'}}
-}).then(function (result) {
-  // yo, a result
-  console.log('finded');
-  console.log(result);
-}).catch(function (err) {
-  // ouch, an error
-  console.log(err);
-});
-
 var app = angular.module('starter', ['ionic', 'formlyIonic', 'ngAnimate']);
 app.factory('DataSingleton', DataSingleton);
 app.factory('formdataService', formdataService);
