@@ -141,8 +141,7 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
       console.log(err);
     });
   };
-
-    ctrl.fetchFormData();
+  ctrl.fetchFormData();
   });
 
 app.controller('FormCtrl', function ($scope, $state, $stateParams,
