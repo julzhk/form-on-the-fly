@@ -4,27 +4,27 @@ const GET_ENDPOINT= DB_END_POINT + '/api/';
 const LOGIN_POST_ENDPOINT= DB_END_POINT + '/api/v1/auth/login/';
 const FORMS_LIST_ENDPOINT= DB_END_POINT + '/api/v1/forms/';
 var db = new PouchDB(POUCH_DB_NAME);
-db.createIndex({
-  index: {
-    fields: ['formid']
-  }
-}).then(function (result) {
-  // yo, a result
-  console.log('formid index');
-  console.log(result);
-}).catch(function (err) {
-  // ouch, an error
-  console.log('err');
-  console.log(result);
-});
+//db.createIndex({
+//  index: {
+//    fields: ['formid']
+//  }
+//}).then(function (result) {
+//   yo, a result
+  //console.log('formid index');
+  //console.log(result);
+//}).catch(function (err) {
+//   ouch, an error
+  //console.log('err');
+  //console.log(result);
+//});
 
-db.getIndexes().then(function (result) {
-  console.log('get indexes');
-  console.log(result);
-}).catch(function (err) {
-  // ouch, an error
-  console.log('get indexes err');
-});
+//db.getIndexes().then(function (result) {
+//  console.log('get indexes');
+//  console.log(result);
+//}).catch(function (err) {
+//   ouch, an error
+  //console.log('get indexes err');
+//});
 
 var app = angular.module('starter', ['ionic', 'formlyIonic', 'ngAnimate']);
 app.factory('DataSingleton', DataSingleton);
@@ -79,12 +79,32 @@ app.controller('FormListCtrl', function ($scope, $state, $stateParams,
 app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
                                          formdataService, $ionicHistory, $http) {
   var ctrl = this;
+  var deleted_list = [];
   var formid = $stateParams.formid;
   formdataService.initDB();
   $scope.goBack = function () {
     $ionicHistory.goBack();
   };
-
+  $scope.delete= function(item_id, item_rev){
+    console.log("del");
+    console.log(item_id);
+    console.log(item_rev);
+     db.remove(
+      item_id, item_rev
+    ).then(function (result) {
+      console.log(result);
+       deleted_list.push(item_id);
+       $scope.$apply();
+    }).catch(function (err) {
+      // ouch, an error
+      console.log(err);
+    });
+  };
+  $scope.showrow = function(item_id){
+    console.log(item_id);
+    console.log(deleted_list);
+    return deleted_list.indexOf(item_id) == -1;
+  };
   ctrl.fetchFormElements = function (formid) {
     // get the empty elements from API
     // todo turn this to a service
@@ -101,29 +121,29 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
   console.log($stateParams.formid);
   // populate $scope.fields:
   ctrl.fetchFormElements($stateParams.formid);
-
-  // see http://nolanlawson.github.io/pouchdb-find/
+  ctrl.fetchFormData = function(){
+      // see http://nolanlawson.github.io/pouchdb-find/
   //https://github.com/nolanlawson/pouchdb-find
-
   // Available selectors are $gt, $gte, $lt, $lte,
   // $eq, $ne, $exists, $type, and more
-  db.createIndex({
-    index: {fields: ['formid']}
-  }).then(function () {
     db.find({
       selector: {formid: {$eq: formid}}
     }).then(function (result) {
       console.log(result);
       ctrl.formdata = result.docs;
       $scope.formdata = result.docs;
-      $scope.firstrow = result.docs.slice(0, 1)[0]
+      $scope.firstrow = result.docs.slice(0, 1)[0];
       console.log($scope.formdata);
+      ctrl.fetchFormData();
+      $scope.$apply();
     }).catch(function (err) {
       // ouch, an error
       console.log(err);
     });
+  };
+
+    ctrl.fetchFormData();
   });
-});
 
 app.controller('FormCtrl', function ($scope, $state, $stateParams,
                                      $ionicHistory, $http, $ionicPlatform,

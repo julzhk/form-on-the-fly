@@ -50,14 +50,14 @@
         </th>
         <th>del</th>
         </thead>
-        <tr ng-repeat="item in formdata" class="zebra-{{$index % 2 }}">
+        <tr ng-show="showrow(item._id)" ng-repeat="item in formdata" class="zebra-{{$index % 2 }}">
           <td>{{$index + 1}}</td>
           <td ng-repeat="key in fields">
             {{ item[key.key] }}
           </td>
             <td>
                <a class="button"
-              ng-click="login('email','password')">
+              ng-click="delete(item._id, item._rev)">
         x
       </a>
 
