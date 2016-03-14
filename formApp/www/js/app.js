@@ -93,17 +93,11 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
       item_id, item_rev
     ).then(function (result) {
       console.log(result);
-       deleted_list.push(item_id);
        $scope.$apply();
     }).catch(function (err) {
       // ouch, an error
       console.log(err);
     });
-  };
-  $scope.showrow = function(item_id){
-    console.log(item_id);
-    console.log(deleted_list);
-    return deleted_list.indexOf(item_id) == -1;
   };
   ctrl.fetchFormElements = function (formid) {
     // get the empty elements from API
