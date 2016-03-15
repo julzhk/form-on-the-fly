@@ -31,6 +31,7 @@ app.factory('DataSingleton', DataSingleton);
 app.factory('formdataService', formdataService);
 
 app.run(function ($ionicPlatform) {
+  //initialise
   $ionicPlatform.ready(function () {
     if (window.cordova && window.cordova.plugins.Keyboard) {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -45,6 +46,9 @@ app.run(function ($ionicPlatform) {
     if (window.StatusBar) {
       StatusBar.styleDefault();
     }
+  //  custom initializations
+      formdataService.initDB();
+
   });
 });
 
@@ -79,11 +83,9 @@ app.controller('FormListCtrl', function ($scope, $state, $stateParams,
 app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
                                          formdataService, $ionicHistory, $http) {
   var ctrl = this;
-  var deleted_list = [];
   var formid = $stateParams.formid;
-  formdataService.initDB();
   $scope.goBack = function () {
-    $ionicHistory.goBack();
+    $state.go('formchooser');
   };
   $scope.delete= function(item_id, item_rev){
     console.log("del");
@@ -255,6 +257,10 @@ app.controller('LoginCtrl', function ($scope, $state, $http,
     $state.go('form', {formid: n});
   };
 
+  $scope.forgotlogin= function login() {
+    DataSingleton.user_email = 'fake user';
+    $state.go('formchooser');
+  };
   $scope.login = function login(email, password) {
     console.log(this.email);
     console.log(this.password);
