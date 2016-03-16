@@ -56,10 +56,10 @@
             {{ item[key.key] }}
           </td>
             <td>
-               <a class="button" ng-click="delete(item._id, item._rev)">
-        x
-      </a>
-
+               <a class="button" ng-click="delete(item._id, item._rev)">x</a>
+            </td>
+            <td>
+               <a class="button" ng-click="edit(item._id)">edit</a>
             </td>
       </tr>
       </table>
