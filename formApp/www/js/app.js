@@ -72,9 +72,6 @@ app.controller('FormListCtrl', function ($scope, $state, $stateParams,
   $scope.chooseForm = function (n) {
     $state.go('form', {formid: n});
   };
-  $scope.goBack = function () {
-    $ionicHistory.goBack();
-  };
   $scope.viewData = function (n) {
     $state.go('formdata', {formid: n});
   };
