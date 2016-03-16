@@ -1,0 +1,19 @@
+.zebra-0 {
+  background-color: #0a9dc7;
+}
+
+
+.formdata.ng-enter,
+.formdata.ng-leave {
+  -webkit-transition:0.5s linear all;
+  transition:0.5s linear all;
+}
+
+.formdata.ng-enter, .formdata.ng-leave.ng-leave-active {
+  opacity:0;
+
+}
+.formdata.ng-leave, .formdata.ng-enter.ng-enter-active {
+  opacity:1;
+
+}

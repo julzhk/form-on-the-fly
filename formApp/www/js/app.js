@@ -95,6 +95,7 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
       item_id, item_rev
     ).then(function (result) {
       console.log(result);
+       ctrl.fetchFormData();
        $scope.$apply();
     }).catch(function (err) {
       // ouch, an error
