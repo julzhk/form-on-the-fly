@@ -2,9 +2,7 @@
   background-color: #0a9dc7;
 }
 
-
-.formdata.ng-enter,
-.formdata.ng-leave {
+.formdata.ng-enter, .formdata.ng-leave {
   -webkit-transition:0.5s linear all;
   transition:0.5s linear all;
 }

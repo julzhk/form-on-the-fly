@@ -96,7 +96,6 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
     ).then(function (result) {
       console.log(result);
        ctrl.fetchFormData();
-       $scope.$apply();
     }).catch(function (err) {
       // ouch, an error
       console.log(err);
@@ -115,7 +114,7 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
         console.log("Error occured");
       });
   };
-  console.log($stateParams.formid);
+
   // populate $scope.fields:
   ctrl.fetchFormElements($stateParams.formid);
   ctrl.fetchFormData = function(){
@@ -126,12 +125,11 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
     db.find({
       selector: {formid: {$eq: formid}}
     }).then(function (result) {
-      console.log(result);
+
       ctrl.formdata = result.docs;
       $scope.formdata = result.docs;
-      $scope.firstrow = result.docs.slice(0, 1)[0];
+
       console.log($scope.formdata);
-      ctrl.fetchFormData();
       $scope.$apply();
     }).catch(function (err) {
       // ouch, an error
