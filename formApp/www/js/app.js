@@ -56,16 +56,16 @@ app.run(function ($ionicPlatform) {
 app.controller('FormListCtrl', function ($scope, $state, $stateParams,
                                          formdataService, $ionicHistory, $http) {
   var ctrl = this;
-  var vm = this;
-
   ctrl.fetchContent = function () {
     $http.get(FORMS_LIST_ENDPOINT)
       .success(function (data, status, headers, config) {
         $scope.formnames = data;
+        $scope.servererror = false;
       })
       .error(function (error, status, headers, config) {
         console.log(status);
         console.log("Error occured");
+        $scope.servererror = true;
       });
   };
   ctrl.fetchContent();
