@@ -41,28 +41,24 @@
 
 <!--Show FORM page -->
 <div id="formcontainer" ng-controller="FormCtrl as ctrl">
-  <ion-view view-title='Form'>
+  <ion-view view-title='Submit data'>
     <ion-content class="padding">
       <form name="ctrl.form" novalidate ng-submit="submit()">
-
         <formly-form model="ctrl.model" fields="ctrl.fields" >
-      <div ng-if="datasubmitted==False" class="fade">
-          <button type="submit" ng-click="formsubmit()" class="btn btn-default">Submit</button>
-          <button type="submit" ng-click="clear()" class="btn btn-default">Clear</button>
-      </div>
+          <div ng-if="datasubmitted==False" class="fade">
+              <button type="submit" ng-click="formsubmit()" class="btn btn-default">Submit</button>
+              <button type="submit" ng-click="clear()" class="btn btn-default">Clear</button>
+          </div>
         </formly-form>
-
       </form>
       {{ success }}
-      <!--<pre> div ng-repeat="n in formdatas">{{n}}</div></pre>-->
-          <button class="button icon ion-ios-arrow-back"
+      <button class="button icon ion-ios-arrow-back"
               ng-click="goBack()"
               nav-direction="back">Go Back
       </button>
       <div ng-if="datasubmitted" class="fade">
          Data submitted
       </div>
-
     </ion-content>
   </ion-view>
 </div>
