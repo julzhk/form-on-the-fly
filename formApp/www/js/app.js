@@ -79,8 +79,10 @@ app.controller('FormListCtrl', function ($scope, $state, $stateParams,
 
 app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
                                          formdataService, $ionicHistory, $http) {
+  // show table of previously entered data
   var ctrl = this;
   var formid = $stateParams.formid;
+  $scope.formid = formid;
   $scope.goBack = function () {
     $state.go('formchooser');
   };
@@ -98,6 +100,12 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
       console.log(err);
     });
   };
+  $scope.edit= function(form_id, item_id){
+    console.log("edit");
+    console.log(item_id);
+    $state.go('formedit', {formid: form_id, item_id: item_id});
+  };
+
   ctrl.fetchFormElements = function (formid) {
     // get the empty elements from API
     // todo turn this to a service
@@ -139,9 +147,25 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
 app.controller('FormCtrl', function ($scope, $state, $stateParams,
                                      $ionicHistory, $http, $ionicPlatform,
                                      formdataService, DataSingleton) {
+  // show a form from API and allow data to be entered & saved locally
   var ctrl = this;
   ctrl.model = {};
-
+  //formid: form_id, item_id: item_id
+  var formdata_id = $stateParams.formid;
+  if (typeof $stateParams.item_id !== 'undefined') {
+    var item_id = $stateParams.item_id;
+    db.find({
+      selector: {_id: {$eq: item_id}}
+    }).then(function (result) {
+      console.log(result);
+      ctrl.model = result.docs[0];
+      $scope.apply();
+    }).catch(function (err) {
+      // ouch, an error
+      console.log(err);
+    });
+  }
+  console.log(formdata_id);
   $scope.formsubmit = function () {
     ctrl.model['formid'] = $stateParams.formid;
     ctrl.model['user_email'] = DataSingleton.user_email;
@@ -151,7 +175,6 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
     post_data_server(ctrl.model);
     $scope.datasubmitted = true;
   };
-
   $scope.clear = function () {
     console.log('clear..');
     formdataService.deleteallformdata();
@@ -185,6 +208,7 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
   };
 
   // Initialize the database.
+  //todo move this?
   $ionicPlatform.ready(function () {
     formdataService.initDB();
     // Get all formdata records from the database.
@@ -237,14 +261,22 @@ app.config(function ($stateProvider, $urlRouterProvider) {
       url: '/form/:formid',
       templateUrl: 'form.html',
       controller: 'FormCtrl'
+    })
+    .state('formedit', {
+      url: '/formedit/:formid/:item_id',
+      templateUrl: 'form.html',
+      controller: 'FormCtrl'
     });
   $urlRouterProvider.otherwise("/");
 });
 
 
 app.controller('LoginCtrl', function ($scope, $state, $http,
-                                      $stateParams, $ionicHistory,
+                                      $stateParams, $ionicHistory,formdataService,
                                       DataSingleton) {
+  //  initialization of database
+  formdataService.initDB();
+
   $scope.goBack = function () {
     $ionicHistory.goBack();
   };
