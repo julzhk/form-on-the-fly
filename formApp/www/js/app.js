@@ -48,7 +48,6 @@ app.run(function ($ionicPlatform) {
     }
   //  custom initializations
       formdataService.initDB();
-
   });
 });
 
@@ -130,10 +129,8 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
     db.find({
       selector: {formid: {$eq: formid}}
     }).then(function (result) {
-
       ctrl.formdata = result.docs;
       $scope.formdata = result.docs;
-
       console.log($scope.formdata);
       $scope.$apply();
     }).catch(function (err) {
@@ -159,7 +156,6 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
     }).then(function (result) {
       console.log(result);
       ctrl.model = result.docs[0];
-      $scope.apply();
     }).catch(function (err) {
       // ouch, an error
       console.log(err);
@@ -240,36 +236,6 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
 });
 
 
-app.config(function ($stateProvider, $urlRouterProvider) {
-  $stateProvider
-    .state('login', {
-      url: '/',
-      templateUrl: 'login.html',
-      controller: 'LoginCtrl'
-    })
-    .state('formchooser', {
-      url: '/formchooser/',
-      templateUrl: 'formchooser.html',
-      controller: 'FormListCtrl'
-    })
-    .state('formdata', {
-      url: '/formdata/:formid',
-      templateUrl: 'formdata.html',
-      controller: 'FormDataCtrl'
-    })
-    .state('form', {
-      url: '/form/:formid',
-      templateUrl: 'form.html',
-      controller: 'FormCtrl'
-    })
-    .state('formedit', {
-      url: '/formedit/:formid/:item_id',
-      templateUrl: 'form.html',
-      controller: 'FormCtrl'
-    });
-  $urlRouterProvider.otherwise("/");
-});
-
 
 app.controller('LoginCtrl', function ($scope, $state, $http,
                                       $stateParams, $ionicHistory,formdataService,
@@ -303,4 +269,36 @@ app.controller('LoginCtrl', function ($scope, $state, $http,
         $scope.error = 'Login error!';
       });
   }
+});
+
+
+app.config(function ($stateProvider, $urlRouterProvider) {
+  $stateProvider
+    .state('login', {
+      url: '/',
+      templateUrl: 'login.html',
+      controller: 'LoginCtrl'
+    })
+    .state('formchooser', {
+      url: '/formchooser/',
+      templateUrl: 'formchooser.html',
+      controller: 'FormListCtrl'
+    })
+    .state('formdata', {
+      url: '/formdata/:formid',
+      templateUrl: 'formdata.html',
+      cache: false,
+      controller: 'FormDataCtrl'
+    })
+    .state('form', {
+      url: '/form/:formid',
+      templateUrl: 'form.html',
+      controller: 'FormCtrl'
+    })
+    .state('formedit', {
+      url: '/formedit/:formid/:item_id',
+      templateUrl: 'form.html',
+      controller: 'FormCtrl'
+    });
+  $urlRouterProvider.otherwise("/");
 });
