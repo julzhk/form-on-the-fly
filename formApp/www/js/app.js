@@ -104,6 +104,11 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
     console.log(item_id);
     $state.go('formedit', {formid: form_id, item_id: item_id});
   };
+  $scope.viewdata= function(form_id, item_id){
+    console.log("view data");
+    console.log(item_id);
+    $state.go('formview', {formid: form_id, item_id: item_id, viewonly:true});
+  };
 
   ctrl.fetchFormElements = function (formid) {
     // get the empty elements from API
@@ -139,7 +144,7 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
     });
   };
   ctrl.fetchFormData();
-  });
+});
 
 app.controller('FormCtrl', function ($scope, $state, $stateParams,
                                      $ionicHistory, $http, $ionicPlatform,
@@ -149,6 +154,16 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
   ctrl.model = {};
   //formid: form_id, item_id: item_id
   var formdata_id = $stateParams.formid;
+  if (typeof $stateParams.viewonly == 'undefined') {
+    $scope.viewonly = false;
+  } else {
+    $scope.viewonly = $stateParams.viewonly == 'true';
+  };
+    ctrl.options = {formState: {
+    readOnly: true
+    }
+  };
+
   if (typeof $stateParams.item_id !== 'undefined') {
     var item_id = $stateParams.item_id;
     db.find({
@@ -299,6 +314,12 @@ app.config(function ($stateProvider, $urlRouterProvider) {
       url: '/formedit/:formid/:item_id',
       templateUrl: 'form.html',
       controller: 'FormCtrl'
-    });
+    })
+    .state('formview', {
+      url: '/formedit/:formid/:item_id/:viewonly',
+      templateUrl: 'form.html',
+      controller: 'FormCtrl'
+    })
+  ;
   $urlRouterProvider.otherwise("/");
 });

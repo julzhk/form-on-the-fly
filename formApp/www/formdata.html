@@ -45,13 +45,19 @@
       <table class="formdata">
         <thead>
         <th>ID</th>
+        <th>view</th>
         <th ng-repeat="key in fields">
           {{ key.templateOptions.label }}
         </th>
         <th>del</th>
+        <th>edit</th>
         </thead>
         <tr ng-repeat="item in formdata" class="formdata zebra-{{$index % 2 }}">
           <td>{{$index + 1}}</td>
+            <td>
+               <a class="button" ng-click="viewdata(formid, item._id)">view</a>
+            </td>
+
           <td ng-repeat="key in fields">
             {{ item[key.key] }}
           </td>
