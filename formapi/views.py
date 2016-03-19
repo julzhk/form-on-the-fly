@@ -24,16 +24,12 @@ from formapi.models import (InputElement, CheckboxElement,
                             )
 
 def form_api(request,form_id):
-    if request.method == 'POST':
-        print 'post'
-        response = HttpResponse()
-    else:
+    if request.method == 'GET':
         data = []
         myform = Form.objects.get(id=int(form_id))
         for mdl in InputElement, TextElement, CheckboxElement, RadioElement,DropdownElement,RangeElement:
             elements = mdl.objects.filter(form=myform)
             data += [ele.to_json() for ele in elements]
-
         data = {'elements': data,
             'meta': {
                 'formname': myform.name

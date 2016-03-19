@@ -11,6 +11,7 @@ class InputElement(models.Model):
     label = models.CharField(max_length=255,default='label')
     placeholder = models.CharField(max_length=255,default='placeholder',blank=True)
     hidden = models.BooleanField(default=False)
+    show_on_listview = models.BooleanField(default=True)
     form = models.ForeignKey(Form,default=Form.objects.first())
 
     def to_json(self):
@@ -31,6 +32,7 @@ class CheckboxElement(models.Model):
     order = models.IntegerField(default=0)
     label = models.CharField(max_length=255,default='label')
     form = models.ForeignKey(Form, default=Form.objects.first())
+    show_on_listview = models.BooleanField(default=True)
 
     def to_json(self):
         return {
@@ -47,6 +49,7 @@ class TextElement(models.Model):
     placeholder = models.TextField()
     label = models.CharField(max_length=255,default='label')
     form = models.ForeignKey(Form,default=Form.objects.first())
+    show_on_listview = models.BooleanField(default=True)
 
     def to_json(self):
         return { "type": "textarea",
@@ -63,7 +66,7 @@ class RadioElement(models.Model):
     order = models.IntegerField(default=0)
     label = models.CharField(max_length=255,default='label')
     form = models.ForeignKey(Form,default=Form.objects.first())
-
+    show_on_listview = models.BooleanField(default=True)
 
     def to_json(self):
         options = RadioItem.objects.filter(radioelement=self)
@@ -89,11 +92,11 @@ class RadioItem(models.Model):
                  }
 
 
-
 class DropdownElement(models.Model):
     order = models.IntegerField(default=0)
     label = models.CharField(max_length=255,default='label')
     form = models.ForeignKey(Form,default=Form.objects.first())
+    show_on_listview = models.BooleanField(default=True)
     def to_json(self):
         options = DropdownItem.objects.filter(dropdown=self)
         option_data = [opt.to_json() for opt in options]
@@ -140,6 +143,7 @@ class RangeElement(models.Model):
     step = models.IntegerField(default=1)
     initial_value = models.IntegerField(default=50)
     form = models.ForeignKey(Form)
+    show_on_listview = models.BooleanField(default=True)
 
     def to_json(self):
         return { "key": self.label,
@@ -153,5 +157,5 @@ class RangeElement(models.Model):
                        "value": self.initial_value,
                        "minIcon": "ion-volume-low",
                        "maxIcon": "ion-volume-high"
-                   }
-                   }
+                    }
+               }
