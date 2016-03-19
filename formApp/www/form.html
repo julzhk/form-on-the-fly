@@ -43,11 +43,11 @@
 <div id="formcontainer" ng-controller="FormCtrl as ctrl">
   <ion-view view-title='Submit data'>
     <ion-content class="padding">
-      <form name="ctrl.form" novalidate ng-submit="submit()">
-        <formly-form model="ctrl.model" fields="ctrl.fields" >
+        <form name="ctrl.form" novalidate ng-submit="submit()">
+        <formly-form model="ctrl.model" fields="ctrl.fields" options="ctrl.options">
           <div ng-if="datasubmitted==False" class="fade">
-              <button type="submit" ng-click="formsubmit()" class="btn btn-default">Submit</button>
-              <button type="submit" ng-click="clear()" class="btn btn-default">Clear</button>
+              <button ng-if="viewonly==false" type="submit" ng-click="formsubmit()" class="btn btn-default">Submit</button>
+              <button ng-if="viewonly==false" type="submit" ng-click="clear()" class="btn btn-default">Clear</button>
           </div>
         </formly-form>
       </form>
