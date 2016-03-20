@@ -26,7 +26,9 @@ from collect_data.views import post_data
 from django.conf import settings
 from django.conf.urls.static import static
 from form_generator.views import form_generator
+from django.shortcuts import HttpResponseRedirect
 
+from content.views import home
 router = routers.SimpleRouter()
 router.register(r'accounts', AccountViewSet)
 router.register(r'forms', FormViewSet)

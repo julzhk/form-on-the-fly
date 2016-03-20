@@ -46,7 +46,7 @@
         <thead>
         <th>ID</th>
         <th>view</th>
-        <th ng-repeat="key in fields">
+        <th ng-repeat="key in fields | filter: key.extras.show_on_listview" >
           {{ key.templateOptions.label }}
         </th>
         <th>del</th>
@@ -58,7 +58,7 @@
                <a class="button" ng-click="viewdata(formid, item._id)">view</a>
             </td>
 
-          <td ng-repeat="key in fields">
+          <td ng-repeat="key in fields | filter: key.extras.show_on_listview " >
             {{ item[key.key] }}
           </td>
             <td>

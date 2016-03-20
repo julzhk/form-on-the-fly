@@ -113,3 +113,5 @@ STATICFILES_FINDERS = (
 BOWER_INSTALLED_APPS = (
     'easy-form-generator',
 )
+
+from settings_local import *
