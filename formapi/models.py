@@ -25,7 +25,7 @@ class InputElement(models.Model):
                     "label": self.label,
                     "placeholder": self.placeholder,
                 },
-                "extras":{"show_on_listview":self.show_on_listview}
+                "custom":{"show_on_listview":self.show_on_listview}
             }
 
 
@@ -42,7 +42,7 @@ class CheckboxElement(models.Model):
               'templateOptions': {
                 'label': self.label,
               },
-            "extras":{"show_on_listview":self.show_on_listview}
+            "custom":{"show_on_listview":self.show_on_listview}
             }
 
 
@@ -62,7 +62,7 @@ class TextElement(models.Model):
                      "placeholder": self.placeholder,
                      "rows":6
                  },
-                 "extras":{"show_on_listview":self.show_on_listview}
+                 "custom":{"show_on_listview":self.show_on_listview}
                 }
 
 
@@ -81,7 +81,7 @@ class RadioElement(models.Model):
                      "label": "Have you tried EmberJs yet?",
                      "options": option_data
                     },
-                 "extras":{"show_on_listview":self.show_on_listview}
+                 "custom":{"show_on_listview":self.show_on_listview}
                  }
 
 
@@ -115,7 +115,7 @@ class DropdownElement(models.Model):
                      "valueProp": "id",
                      "labelProp": "label"
                  },
-                 "extras":{"show_on_listview":self.show_on_listview}
+                 "custom":{"show_on_listview":self.show_on_listview}
                  }
 
 class DropdownItemCategory(models.Model):
@@ -164,5 +164,5 @@ class RangeElement(models.Model):
                        "minIcon": "ion-volume-low",
                        "maxIcon": "ion-volume-high"
                     },
-                 "extras":{"show_on_listview":self.show_on_listview}
+                 "custom":{"show_on_listview":self.show_on_listview}
                }
