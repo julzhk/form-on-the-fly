@@ -104,6 +104,9 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
     console.log(item_id);
     $state.go('formedit', {formid: form_id, item_id: item_id});
   };
+  $scope.show_on_listview = function(item) {
+    return item.custom.show_on_listview;
+};
   $scope.viewdata= function(form_id, item_id){
     console.log("view data");
     console.log(item_id);
@@ -158,11 +161,7 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
     $scope.viewonly = false;
   } else {
     $scope.viewonly = $stateParams.viewonly == 'true';
-  };
-    ctrl.options = {formState: {
-    readOnly: true
-    }
-  };
+  }
 
   if (typeof $stateParams.item_id !== 'undefined') {
     var item_id = $stateParams.item_id;
@@ -182,7 +181,6 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
     ctrl.model['user_email'] = DataSingleton.user_email;
     console.log(ctrl.model);
     r = formdataService.addformdata(ctrl.model);
-    console.log(r);
     post_data_server(ctrl.model);
     $scope.datasubmitted = true;
   };
@@ -238,6 +236,7 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
       .success(function (data, status, headers, config) {
         console.log(data);
         ctrl.fields = data.elements;
+        _.map(ctrl.fields,function(f){ delete f.custom });
         ctrl.formname = data.meta.formname;
         console.log(ctrl.fields);
       })
