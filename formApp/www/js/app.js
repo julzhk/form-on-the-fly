@@ -30,7 +30,7 @@ var app = angular.module('starter', ['ionic', 'formlyIonic', 'ngAnimate']);
 app.factory('DataSingleton', DataSingleton);
 app.factory('formdataService', formdataService);
 
-app.run(function ($ionicPlatform) {
+app.run(function ($ionicPlatform,$state) {
   //initialise
   $ionicPlatform.ready(function () {
     if (window.cordova && window.cordova.plugins.Keyboard) {
@@ -47,7 +47,9 @@ app.run(function ($ionicPlatform) {
       StatusBar.styleDefault();
     }
   //  custom initializations
-      formdataService.initDB();
+  //  to do redirect and init
+    $state.go('login');
+
   });
 });
 
@@ -289,7 +291,7 @@ app.controller('LoginCtrl', function ($scope, $state, $http,
 app.config(function ($stateProvider, $urlRouterProvider) {
   $stateProvider
     .state('login', {
-      url: '/',
+      url: '/login/',
       templateUrl: 'login.html',
       controller: 'LoginCtrl'
     })
@@ -318,7 +320,6 @@ app.config(function ($stateProvider, $urlRouterProvider) {
       url: '/formedit/:formid/:item_id/:viewonly',
       templateUrl: 'form.html',
       controller: 'FormCtrl'
-    })
-  ;
-  $urlRouterProvider.otherwise("/");
+    });
+  $urlRouterProvider.otherwise("/err/");
 });
