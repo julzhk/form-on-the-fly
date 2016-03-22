@@ -1,4 +1,5 @@
 const POUCH_DB_NAME = "formdata";
+const POUCH_SCHEMA_DB_NAME = "formschema";
 const POST_END_POINT= DB_END_POINT + '/api/post/';
 const GET_ENDPOINT= DB_END_POINT + '/api/';
 const LOGIN_POST_ENDPOINT= DB_END_POINT + '/api/v1/auth/login/';
@@ -29,6 +30,7 @@ var db = new PouchDB(POUCH_DB_NAME);
 var app = angular.module('starter', ['ionic', 'formlyIonic', 'ngAnimate']);
 app.factory('DataSingleton', DataSingleton);
 app.factory('formdataService', formdataService);
+app.factory('formschemaService', formschemaService);
 
 app.run(function ($ionicPlatform,$state) {
   //initialise
@@ -54,7 +56,7 @@ app.run(function ($ionicPlatform,$state) {
 });
 
 
-app.controller('FormListCtrl', function ($scope, $state, $stateParams,
+app.controller('FormListCtrl', function ($scope, $state, $stateParams,formschemaService,
                                          formdataService, $ionicHistory, $http) {
   var ctrl = this;
   ctrl.fetchContent = function () {
@@ -157,26 +159,44 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
   // show a form from API and allow data to be entered & saved locally
   var ctrl = this;
   ctrl.model = {};
-  //formid: form_id, item_id: item_id
   var formdata_id = $stateParams.formid;
-  if (typeof $stateParams.viewonly == 'undefined') {
-    $scope.viewonly = false;
-  } else {
-    $scope.viewonly = $stateParams.viewonly == 'true';
+  // Initialize the database.
+  //todo move this?
+  $ionicPlatform.ready(function () {
+    formdataService.initDB();
+    // Get all formdata records from the database.
+    formdataService.getAllformdatas().then(function (formdatas) {
+      ctrl.formdatas = formdatas;
+      $scope.formdatas = formdatas;
+    });
+  });
+
+  function is_view_only(){
+    if (typeof $stateParams.viewonly == 'undefined') {
+        return false;
+    } else {
+        return ($stateParams.viewonly == 'true');
+    }
   }
 
-  if (typeof $stateParams.item_id !== 'undefined') {
-    var item_id = $stateParams.item_id;
-    db.find({
-      selector: {_id: {$eq: item_id}}
-    }).then(function (result) {
-      console.log(result);
-      ctrl.model = result.docs[0];
-    }).catch(function (err) {
-      // ouch, an error
-      console.log(err);
-    });
-  }
+  $scope.viewonly = is_view_only();
+
+  function is_edit_previous_data(){
+      if (typeof $stateParams.item_id !== 'undefined') {
+        var item_id = $stateParams.item_id;
+        db.find({
+          selector: {_id: {$eq: item_id}}
+        }).then(function (result) {
+          console.log(result);
+          ctrl.model = result.docs[0];
+        }).catch(function (err) {
+                  // ouch, an error
+                  console.log(err);
+              });
+          }
+      }
+
+  is_edit_previous_data();
   console.log(formdata_id);
   $scope.formsubmit = function () {
     ctrl.model['formid'] = $stateParams.formid;
@@ -218,16 +238,6 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
     });
   };
 
-  // Initialize the database.
-  //todo move this?
-  $ionicPlatform.ready(function () {
-    formdataService.initDB();
-    // Get all formdata records from the database.
-    formdataService.getAllformdatas().then(function (formdatas) {
-      ctrl.formdatas = formdatas;
-      $scope.formdatas = formdatas;
-    });
-  });
 
   //render content
   ctrl.content = [];
