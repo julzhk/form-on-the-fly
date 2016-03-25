@@ -132,7 +132,7 @@ function formschemaService($q) {
         // Creates the database or opens if it already exists
         _db = new PouchDB(POUCH_SCHEMA_DB_NAME, {adapter: 'websql'});
     }
-    function sync($http){
+    function sync(){
       $http.get(FORMS_LIST_ENDPOINT)
       .success(function (data, status, headers, config) {
         return $q.when(_db.post(data));

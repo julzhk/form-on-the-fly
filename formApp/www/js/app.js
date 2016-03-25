@@ -30,7 +30,7 @@ var db = new PouchDB(POUCH_DB_NAME);
 var app = angular.module('starter', ['ionic', 'formlyIonic', 'ngAnimate']);
 app.factory('DataSingleton', DataSingleton);
 app.factory('formdataService', formdataService);
-app.factory('formschemaService', formschemaService);
+app.service('formschemaService', ['$http', formschemaService]);
 
 app.run(function ($ionicPlatform,$state) {
   //initialise
@@ -60,6 +60,12 @@ app.controller('FormListCtrl', function ($scope, $state, $stateParams,formschema
                                          formdataService, $ionicHistory, $http) {
   var ctrl = this;
   ctrl.fetchContent = function () {
+    formschemaService.initDB();
+    //sync from Django to Pouch
+    sync= formschemaService.sync();
+    //get names from pouch cache
+    names = formschemaService.getAllformnames();
+    // get names from server
     $http.get(FORMS_LIST_ENDPOINT)
       .success(function (data, status, headers, config) {
         $scope.formnames = data;
