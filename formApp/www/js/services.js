@@ -117,14 +117,13 @@ function formdataService($q) {
     }
 }
 
-function formschemaService($q) {
+function formschemaService($http, $q) {
     //cache the form layout and form elements
     var _db;
     // We'll need this later.
     var _pouchdb_rows;
     return {
         initDB: initDB,
-        findformschemadatas: findformschemadatas,
         getAllformnames:getAllformnames,
         sync: sync
     };
@@ -146,7 +145,7 @@ function formschemaService($q) {
       _db.allDocs({ include_docs: true}
         ).then(function (result) {
           // yo, a result
-          console.log('finded');
+          console.log('finded all form names');
           console.log(result);
           return result.docs
         }).catch(function (err) {
@@ -155,19 +154,6 @@ function formschemaService($q) {
         });
     }
 
-    function findformschemadatas(formid){
-        db.find({
-          selector: {formid: {$eq: formid}}
-        }).then(function (result) {
-          // yo, a result
-          console.log('finded');
-          console.log(result)
-          return result.docs
-        }).catch(function (err) {
-          // ouch, an error
-          console.log(err);
-        });
-    }
 
     function onDatabaseChange(change) {
         var index = findIndex(_pouchdb_rows, change.id);
