@@ -24,16 +24,10 @@ from formapi.models import (InputElement, CheckboxElement,
                             )
 
 def form_api(request,form_id):
+    data = []
     if request.method == 'GET':
-        data = []
         myform = Form.objects.get(id=int(form_id))
-        for mdl in InputElement, TextElement, CheckboxElement, RadioElement,DropdownElement,RangeElement:
-            elements = mdl.objects.filter(form=myform)
-            data += [ele.to_json() for ele in elements]
-        data = {'elements': data,
-            'meta': {
-                'formname': myform.name
-            }}
+        data = myform.to_json()
     response = JsonResponse(data, safe=False)
     response['Access-Control-Allow-Headers'] = 'Content-Type'
     response['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'

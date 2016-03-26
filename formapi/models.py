@@ -1,10 +1,38 @@
 import os
 from django.db import models
+import couchdb
+
+FORMSCHEMA_DB_NAME = 'formschema'
+
+
 class Form(models.Model):
     name = models.CharField(max_length=255)
 
     def __unicode__(self):
         return 'form: %s' % (self.name)
+
+    def to_json(self):
+        data = []
+        for mdl in InputElement, TextElement, CheckboxElement, RadioElement,DropdownElement,RangeElement:
+            elements = mdl.objects.filter(form=self)
+            data += [ele.to_json() for ele in elements]
+        data = {
+            '_id':str(self.id),
+            'elements': data,
+            'meta': {
+                'formname': self.name
+            }}
+        return data
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        r = super(Form, self).save(force_insert, force_update, using,update_fields)
+        # post to couch
+        data = self.to_json()
+        couch = couchdb.Server()
+        db = couch[FORMSCHEMA_DB_NAME]
+        db.save(data)
+        return r
 
 class InputElement(models.Model):
     order = models.IntegerField(default=0)
