@@ -1,36 +1,20 @@
+const DJANGO_END_POINT = "http://127.0.0.1:8000/";
+const DB_END_POINT = "http://127.0.0.1:5984/";
 const POUCH_DB_NAME = "formdata";
 const POUCH_SCHEMA_DB_NAME = "formschema";
-const POST_END_POINT= DB_END_POINT + '/api/post/';
-const GET_ENDPOINT= DB_END_POINT + '/api/';
-const LOGIN_POST_ENDPOINT= DB_END_POINT + '/api/v1/auth/login/';
-const FORMS_LIST_ENDPOINT= DB_END_POINT + '/api/v1/forms/';
-var db = new PouchDB(POUCH_DB_NAME);
-//db.createIndex({
-//  index: {
-//    fields: ['formid']
-//  }
-//}).then(function (result) {
-//   yo, a result
-  //console.log('formid index');
-  //console.log(result);
-//}).catch(function (err) {
-//   ouch, an error
-  //console.log('err');
-  //console.log(result);
-//});
+const POST_END_POINT= DB_END_POINT + POUCH_DB_NAME;
 
-//db.getIndexes().then(function (result) {
-//  console.log('get indexes');
-//  console.log(result);
-//}).catch(function (err) {
-//   ouch, an error
-  //console.log('get indexes err');
-//});
+const LOGIN_POST_ENDPOINT= DJANGO_END_POINT + 'api/v1/auth/login/';
+const FORMS_LIST_ENDPOINT= DJANGO_END_POINT + 'api/v1/forms/';
+const FORM_SCHEMA_ENDPOINT= DJANGO_END_POINT + 'api/';
+
+// todo can do as myApp.value('DBNAME', 'forms');
+
+var db = new PouchDB(POUCH_DB_NAME);
 
 var app = angular.module('starter', ['ionic', 'formlyIonic', 'ngAnimate']);
 app.factory('DataSingleton', DataSingleton);
 app.factory('formdataService', formdataService);
-app.service('formschemaService', ['$http', formschemaService]);
 
 app.run(function ($ionicPlatform,$state) {
   //initialise
@@ -51,21 +35,15 @@ app.run(function ($ionicPlatform,$state) {
   //  custom initializations
   //  to do redirect and init
     $state.go('login');
-
   });
 });
 
 
-app.controller('FormListCtrl', function ($scope, $state, $stateParams,formschemaService,
+app.controller('FormListCtrl', function ($scope, $state, $stateParams,
                                          formdataService, $ionicHistory, $http) {
   var ctrl = this;
   ctrl.fetchContent = function () {
-    formschemaService.initDB();
-    //sync from Django to Pouch
-    sync= formschemaService.sync();
-    //get names from pouch cache
-    names = formschemaService.getAllformnames();
-    // get names from server
+     //get names from server
     $http.get(FORMS_LIST_ENDPOINT)
       .success(function (data, status, headers, config) {
         $scope.formnames = data;
@@ -166,8 +144,7 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
   var ctrl = this;
   ctrl.model = {};
   var formdata_id = $stateParams.formid;
-  // Initialize the database.
-  //todo move this?
+  //todo move this
   $ionicPlatform.ready(function () {
     formdataService.initDB();
     // Get all formdata records from the database.
@@ -244,13 +221,12 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
     });
   };
 
-
   //render content
   ctrl.content = [];
   ctrl.fetchContent = function (formid) {
     // get the empty elements from API
     // todo turn this to a service
-    $http.get(GET_ENDPOINT + formid)
+    $http.get(FORM_SCHEMA_ENDPOINT + formid)
       .success(function (data, status, headers, config) {
         console.log(data);
         ctrl.fields = data.elements;
@@ -266,7 +242,6 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
   console.log($stateParams.formid);
   ctrl.fetchContent($stateParams.formid);
 });
-
 
 
 app.controller('LoginCtrl', function ($scope, $state, $http,
