@@ -17,7 +17,7 @@ class Form(models.Model):
             elements = mdl.objects.filter(form=self)
             data += [ele.to_json() for ele in elements]
         data = {
-            '_id':str(self.id),
+            '_id':'form_schema-%s' % str(self.id),
             'elements': data,
             'meta': {
                 'formname': self.name

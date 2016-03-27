@@ -22,12 +22,17 @@ from formapi.models import (InputElement, CheckboxElement,
                             TextElement,RadioElement,DropdownElement,
                             RangeElement
                             )
+import couchdb
+from formapi.models import FORMSCHEMA_DB_NAME
+
 
 def form_api(request,form_id):
     data = []
     if request.method == 'GET':
-        myform = Form.objects.get(id=int(form_id))
-        data = myform.to_json()
+            # form_id
+        couch = couchdb.Server()
+        db = couch[FORMSCHEMA_DB_NAME]
+        data = db['form_schema-%s ' % form_id]
     response = JsonResponse(data, safe=False)
     response['Access-Control-Allow-Headers'] = 'Content-Type'
     response['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
@@ -38,7 +43,11 @@ def form_api(request,form_id):
 
 def form_names_api(request):
     # form_id
-    forms = Form.objects.all()
+    couch = couchdb.Server()
+    db = couch[FORMSCHEMA_DB_NAME]
+    forms = db.view('_all_docs')
+
+    # forms = Form.objects.all()
     data = [{'name':myform.name,'id':myform.id} for myform in forms]
     response = JsonResponse(data, safe=False)
     response['Access-Control-Allow-Headers'] = 'Content-Type'
