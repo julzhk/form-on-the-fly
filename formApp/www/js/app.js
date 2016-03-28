@@ -6,7 +6,7 @@ const POST_END_POINT= DB_END_POINT + POUCH_DB_NAME;
 
 const LOGIN_POST_ENDPOINT= DJANGO_END_POINT + 'api/v1/auth/login/';
 const FORMS_LIST_ENDPOINT= DJANGO_END_POINT + 'api/v1/forms/';
-const FORM_SCHEMA_ENDPOINT= DB_END_POINT + POUCH_SCHEMA_DB_NAME ;
+const FORM_SCHEMA_ENDPOINT= DJANGO_END_POINT + 'api/';
 
 // todo can do as myApp.value('DBNAME', 'forms');
 
