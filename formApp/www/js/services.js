@@ -6,7 +6,7 @@ function DataSingleton() {
 
 function formdataService($q) {
     //store the user created data for later online sync
-    var _db;
+    var formdata_db;
     // We'll need this later.
     var _pouchdb_rows;
     return {
@@ -20,30 +20,30 @@ function formdataService($q) {
     };
     function initDB() {
         // Creates the database or opens if it already exists
-        _db = new PouchDB(POUCH_DB_NAME, {adapter: 'websql'});
+        formdata_db = new PouchDB(POUCH_FORM_DATA_DB_NAME, {adapter: 'websql'});
     }
 
     function addformdata(formdata) {
-          return $q.when(_db.post(formdata));
+          return $q.when(formdata_db.post(formdata));
     };
 
     function deleteallformdata() {
           console.log('deleteallformdata formdata');
           return $q.when(
-            _db.destroy()
+            formdata_db.destroy()
           );
     };
 
     function updateformdata(formdata) {
-        return $q.when(_db.put(formdata));
+        return $q.when(formdata_db.put(formdata));
     };
 
     function deleteformdata(formdata) {
-        return $q.when(_db.remove(formdata));
+        return $q.when(formdata_db.remove(formdata));
     };
 
     function findformdatas(formid){
-        db.find({
+        formdata_db.find({
           selector: {formid: {$eq: formid}}
         }).then(function (result) {
           // yo, a result
@@ -58,7 +58,7 @@ function formdataService($q) {
 
     function getAllformdatas() {
         if (!_pouchdb_rows) {
-           return $q.when(_db.allDocs({ include_docs: true}))
+           return $q.when(formdata_db.allDocs({ include_docs: true}))
                 .then(function(docs) {
                     // Each row has a .doc object and we just want to send an
                     // array of pouchdb objects back to the calling controller,
@@ -70,7 +70,7 @@ function formdataService($q) {
                         return row.doc;
                     });
                     // Listen for changes on the database.
-                    _db.changes({ live: true, since: 'now', include_docs: true})
+                    formdata_db.changes({ live: true, since: 'now', include_docs: true})
                        .on('change', onDatabaseChange);
                     return _pouchdb_rows;
                 });
@@ -81,7 +81,7 @@ function formdataService($q) {
     }
 
     function destroy(){
-      _db.destroy().then(function () {
+      formdata_db.destroy().then(function () {
         // database destroyed
         console.log('destroyed');
       }).catch(function (err) {

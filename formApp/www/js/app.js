@@ -1,8 +1,9 @@
 const DJANGO_END_POINT = "http://127.0.0.1:8000/";
 const DB_END_POINT = "http://127.0.0.1:5984/";
-const POUCH_DB_NAME = "formdata";
+const POUCH_FORM_DATA_DB_NAME = "formdata";
 const POUCH_SCHEMA_DB_NAME = "formschema";
-const POST_END_POINT= DB_END_POINT + POUCH_DB_NAME;
+const POUCH_FORMNAMES_DB = "formnames";
+const POST_END_POINT= DB_END_POINT + POUCH_FORM_DATA_DB_NAME;
 
 const LOGIN_POST_ENDPOINT= DJANGO_END_POINT + 'api/v1/auth/login/';
 const FORMS_LIST_ENDPOINT= DJANGO_END_POINT + 'api/v1/forms/';
@@ -10,7 +11,8 @@ const FORM_SCHEMA_ENDPOINT= DJANGO_END_POINT + 'api/';
 
 // todo can do as myApp.value('DBNAME', 'forms');
 
-var db = new PouchDB(POUCH_DB_NAME);
+var formdata_db = new PouchDB(POUCH_FORM_DATA_DB_NAME);
+var formnames_db = new PouchDB(POUCH_FORMNAMES_DB);
 
 var app = angular.module('starter', ['ionic', 'formlyIonic', 'ngAnimate']);
 app.factory('DataSingleton', DataSingleton);
@@ -77,7 +79,7 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
     console.log("del");
     console.log(item_id);
     console.log(item_rev);
-     db.remove(
+    formdata_db.remove(
       item_id, item_rev
     ).then(function (result) {
       console.log(result);
@@ -122,7 +124,7 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
   //https://github.com/nolanlawson/pouchdb-find
   // Available selectors are $gt, $gte, $lt, $lte,
   // $eq, $ne, $exists, $type, and more
-    db.find({
+    formdata_db.find({
       selector: {formid: {$eq: formid}}
     }).then(function (result) {
       ctrl.formdata = result.docs;
@@ -167,7 +169,7 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
   function is_edit_previous_data(){
       if (typeof $stateParams.item_id !== 'undefined') {
         var item_id = $stateParams.item_id;
-        db.find({
+        formdata_db.find({
           selector: {_id: {$eq: item_id}}
         }).then(function (result) {
           console.log(result);
