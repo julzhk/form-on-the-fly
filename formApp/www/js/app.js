@@ -2,17 +2,22 @@ const DJANGO_END_POINT = "http://127.0.0.1:8000/";
 const DB_END_POINT = "http://127.0.0.1:5984/";
 const POUCH_FORM_DATA_DB_NAME = "formdata";
 const POUCH_SCHEMA_DB_NAME = "formschema";
-const POUCH_FORMNAMES_DB = "formnames";
 const POST_END_POINT= DB_END_POINT + POUCH_FORM_DATA_DB_NAME;
 
 const LOGIN_POST_ENDPOINT= DJANGO_END_POINT + 'api/v1/auth/login/';
 const FORMS_LIST_ENDPOINT= DJANGO_END_POINT + 'api/v1/forms/';
-const FORM_SCHEMA_ENDPOINT= DJANGO_END_POINT + 'api/';
+const FORM_SCHEMA_ENDPOINT= DJANGO_END_POINT + 'api/all';
+
+
 
 // todo can do as myApp.value('DBNAME', 'forms');
 
 var formdata_db = new PouchDB(POUCH_FORM_DATA_DB_NAME);
-var formnames_db = new PouchDB(POUCH_FORMNAMES_DB);
+var formschema_db = new PouchDB(POUCH_SCHEMA_DB_NAME);
+
+formschema_db.createIndex({
+  index: {fields: ['name']}
+});
 
 var app = angular.module('starter', ['ionic', 'formlyIonic', 'ngAnimate']);
 app.factory('DataSingleton', DataSingleton);
@@ -41,21 +46,32 @@ app.run(function ($ionicPlatform,$state) {
 });
 
 
-app.controller('FormListCtrl', function ($scope, $state, $stateParams,
+app.controller('FormListCtrl', function ($scope, $state, $stateParams, $q,
                                          formdataService, $ionicHistory, $http) {
   var ctrl = this;
   ctrl.fetchContent = function () {
      //get names from server
-    $http.get(FORMS_LIST_ENDPOINT)
+    $http.get(FORM_SCHEMA_ENDPOINT)
       .success(function (data, status, headers, config) {
         $scope.formnames = data;
         $scope.servererror = false;
-      })
-      .error(function (error, status, headers, config) {
-        console.log(status);
-        console.log("Error occured");
-        $scope.servererror = true;
-      });
+        _.map(data, function(form){
+            formschema_db.put(form);
+          });
+      }).error(
+        function (error, status, headers, config) {
+        data = db.find({
+          selector: {name: {$gt: null}},
+          sort: ['_id']
+        }).then(function(){
+          $scope.formnames = data;
+          }
+        ).catch(function(err){
+            console.log("Error occured");
+            $scope.servererror = true;
+        });
+      }
+        )
   };
   ctrl.fetchContent();
   $scope.chooseForm = function (n) {
