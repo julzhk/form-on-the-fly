@@ -39,7 +39,17 @@ def form_api(request,form_id):
 def form_names_api(request):
     # form_id
     forms = Form.objects.all()
-    data = [{'name':myform.name,'id':myform.id} for myform in forms]
+    data = [{'name':myform.name,'_id':myform.id} for myform in forms]
+    response = JsonResponse(data, safe=False)
+    response['Access-Control-Allow-Headers'] = 'Content-Type'
+    response['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+    response['Access-Control-Allow-Origin'] = '*'
+    return response
+
+def form_schema_all(request):
+    # forms schema
+    forms = Form.objects.all()
+    data = [myform.to_json() for myform in forms]
     response = JsonResponse(data, safe=False)
     response['Access-Control-Allow-Headers'] = 'Content-Type'
     response['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'

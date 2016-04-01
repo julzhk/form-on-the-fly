@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from formapi.views import form_api, form_names_api
+from formapi.views import form_api, form_names_api, form_schema_all
 from rest_framework_nested import routers
 
 from authentication.views import AccountViewSet
@@ -40,6 +40,7 @@ urlpatterns = [
     url(r'^api/names', form_names_api),
     url(r'^formgen', form_generator),
     url(r'^api/post', post_data),
+    url(r'^api/all', form_schema_all),
     url(r'^api/(?P<form_id>\d+)', form_api),
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
