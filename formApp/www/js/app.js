@@ -72,16 +72,18 @@ app.controller('FormListCtrl', function ($scope, $state, $stateParams, $q,
           });
       }).error(
         function (error, status, headers, config) {
-        data = db.find({
-          selector: {name: {$gt: null}},
-          sort: ['_id']
-        }).then(function(){
-          $scope.formnames = data;
-          }
-        ).catch(function(err){
-            console.log("Error occured");
-            $scope.servererror = true;
-        });
+          data = formschema_db.find({
+            selector: {
+              _id: {'$gt': null}
+            },
+              include_docs: true,
+              sort: [{_id: 'desc'}]
+        }).then(function(data){
+            _.map(data, function(form){
+              upsert(formschema_db, form);
+            });
+
+          });
       }
         )
   };
