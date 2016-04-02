@@ -8,6 +8,18 @@ const LOGIN_POST_ENDPOINT= DJANGO_END_POINT + 'api/v1/auth/login/';
 const FORMS_LIST_ENDPOINT= DJANGO_END_POINT + 'api/v1/forms/';
 const FORM_SCHEMA_ENDPOINT= DJANGO_END_POINT + 'api/all';
 
+function upsert( db, doc ) {
+    db.get ( doc._id )
+        .then (function(_doc) {
+            console.log('updating');
+            doc._rev = _doc._rev;
+            return db.put(doc);
+            })
+        .catch( function (error) {
+            console.log('inserting');
+            return db.put(doc);
+        })
+}
 
 
 // todo can do as myApp.value('DBNAME', 'forms');
@@ -56,7 +68,7 @@ app.controller('FormListCtrl', function ($scope, $state, $stateParams, $q,
         $scope.formnames = data;
         $scope.servererror = false;
         _.map(data, function(form){
-            formschema_db.put(form);
+            upsert(formschema_db, form);
           });
       }).error(
         function (error, status, headers, config) {
