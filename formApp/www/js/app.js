@@ -7,6 +7,7 @@ const POST_END_POINT= DB_END_POINT + POUCH_FORM_DATA_DB_NAME;
 const LOGIN_POST_ENDPOINT= DJANGO_END_POINT + 'api/v1/auth/login/';
 const FORMS_LIST_ENDPOINT= DJANGO_END_POINT + 'api/v1/forms/';
 const FORM_SCHEMA_ENDPOINT= DJANGO_END_POINT + 'api/all';
+const FORM_SCHEMA_API= DJANGO_END_POINT + 'api/';
 
 function upsert( db, doc ) {
     db.get( doc._id )
@@ -136,17 +137,33 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
   };
 
   ctrl.fetchFormElements = function (formid) {
-    // get the empty elements from API
-    // todo turn this to a service
-    $http.get('http://127.0.0.1:8000/api/' + formid)
-      .success(function (data, status, headers, config) {
-        $scope.fields = data.elements;
-        $scope.formname = data.meta.formname;
-      })
-      .error(function (error, status, headers, config) {
-        console.log(status);
-        console.log("Error occured");
-      });
+
+    //get column headers
+    data = formschema_db.find({
+            selector: {
+              _id: {'$eq': formid}
+            },  include_docs: true,
+              sort: [{_id: 'desc'}]
+        }).then(function(data){
+            //got from local store, populate
+          _.map(data, function(formdata){
+              $scope.fields = formdata[0].docs.elements;
+              $scope.formname = formdata[0].docs.meta.formname;
+            });
+        }).catch(function (err) {
+          // get the empty elements from API
+        console.log('pouch err - get from api!');
+        $http.get('http://127.0.0.1:8000/api/' + formid)
+          .success(function (data, status, headers, config) {
+            $scope.fields = data.elements;
+            $scope.formname = data.meta.formname;
+          })
+          .error(function (error, status, headers, config) {
+            console.log(status);
+            console.log("Error occured");
+          });
+
+    });
   };
 
   // populate $scope.fields:
@@ -159,8 +176,8 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
     formdata_db.find({
       selector: {formid: {$eq: formid}}
     }).then(function (result) {
-      ctrl.formdata = result.docs;
-      $scope.formdata = result.docs;
+      ctrl.formdata = result.docs[0];
+      $scope.formdata = result.docs[0];
       console.log($scope.formdata);
       $scope.$apply();
     }).catch(function (err) {
@@ -260,7 +277,7 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
   ctrl.fetchContent = function (formid) {
     // get the empty elements from API
     // todo turn this to a service
-    $http.get(FORM_SCHEMA_ENDPOINT + formid)
+    $http.get(FORM_SCHEMA_API + formid)
       .success(function (data, status, headers, config) {
         console.log(data);
         ctrl.fields = data.elements;
