@@ -22,6 +22,8 @@ from formapi.models import (InputElement, CheckboxElement,
                             TextElement,RadioElement,DropdownElement,
                             RangeElement
                             )
+def get_num(x):
+    return int(''.join(ele for ele in x if ele.isdigit()))
 
 def form_api(request,form_id):
     data = []
