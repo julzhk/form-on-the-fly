@@ -41,6 +41,6 @@ urlpatterns = [
     url(r'^formgen', form_generator),
     url(r'^api/post', post_data),
     url(r'^api/all', form_schema_all),
-    url(r'^api/(?P<form_id>\d+)', form_api),
+    url(r'^api/form_(?P<form_id>\d+)', form_api),
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

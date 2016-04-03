@@ -9,7 +9,7 @@ const FORMS_LIST_ENDPOINT= DJANGO_END_POINT + 'api/v1/forms/';
 const FORM_SCHEMA_ENDPOINT= DJANGO_END_POINT + 'api/all';
 
 function upsert( db, doc ) {
-    db.get ( doc._id )
+    db.get( doc._id )
         .then (function(_doc) {
             console.log('updating');
             doc._rev = _doc._rev;
@@ -62,15 +62,17 @@ app.controller('FormListCtrl', function ($scope, $state, $stateParams, $q,
                                          formdataService, $ionicHistory, $http) {
   var ctrl = this;
   ctrl.fetchContent = function () {
-     //get names from server
+     //try to get form data (especially names) from server
     $http.get(FORM_SCHEMA_ENDPOINT)
       .success(function (data, status, headers, config) {
         $scope.formnames = data;
         $scope.servererror = false;
         _.map(data, function(form){
+          console.log('upsert');
             upsert(formschema_db, form);
           });
       }).error(
+        //server not contacted, get from local db
         function (error, status, headers, config) {
           data = formschema_db.find({
             selector: {
@@ -79,13 +81,13 @@ app.controller('FormListCtrl', function ($scope, $state, $stateParams, $q,
               include_docs: true,
               sort: [{_id: 'desc'}]
         }).then(function(data){
-            _.map(data, function(form){
-              upsert(formschema_db, form);
-            });
-
+            //got from local store, populate
+            $scope.formnames = data.docs;
           });
       }
-        )
+    ).then(function(){
+    //  done after
+    })
   };
   ctrl.fetchContent();
   $scope.chooseForm = function (n) {
@@ -290,7 +292,7 @@ app.controller('LoginCtrl', function ($scope, $state, $http,
     $state.go('form', {formid: n});
   };
 
-  $scope.forgotlogin= function login() {
+  $scope.forgotlogin= function() {
     DataSingleton.user_email = 'fake user';
     $state.go('formchooser');
   };
@@ -308,6 +310,7 @@ app.controller('LoginCtrl', function ($scope, $state, $http,
         $scope.error = 'Login error!';
       });
   }
+  $scope.forgotlogin();
 });
 
 

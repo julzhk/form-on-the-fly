@@ -4,6 +4,13 @@ import couchdb
 
 FORMSCHEMA_DB_NAME = 'formschema'
 
+def id_generate(prefix='form_',n=0):
+    """
+    :type prefix: str
+    """
+    # internal pouch ids start with _, so we cannot!
+    assert prefix[0] is not '_'
+    return '{}{}'.format(prefix,str(n))
 
 class Form(models.Model):
     name = models.CharField(max_length=255)
@@ -17,7 +24,7 @@ class Form(models.Model):
             elements = mdl.objects.filter(form=self)
             data += [ele.to_json() for ele in elements]
         data = {
-            '_id':str(self.id),
+            '_id':id_generate(n=self.id),
             'elements': data,
             'meta': {
                 'formname': self.name
