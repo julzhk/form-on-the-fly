@@ -3,7 +3,7 @@ function DataSingleton() {
     // http://stackoverflow.com/questions/21919962/share-data-between-angularjs-controllers
     return {'user_email': 'anon'};
 }
-
+//THIS IS HOW TO DI TO A SERVICE?VV
 function formdataService($q) {
     //store the user created data for later online sync
     var formdata_db;

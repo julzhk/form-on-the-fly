@@ -66,13 +66,16 @@ app.controller('FormListCtrl', function ($scope, $state, $stateParams, $q,
      //try to get form data (especially names) from server
     $http.get(FORM_SCHEMA_ENDPOINT)
       .success(function (data, status, headers, config) {
+        console.log('got from server');
         $scope.formnames = data;
         $scope.servererror = false;
+        console.log('upsert to local store');
         _.map(data, function(form){
           console.log('upsert');
             upsert(formschema_db, form);
           });
       }).error(
+        console.log('start fetch from local store');
         //server not contacted, get from local db
         function (error, status, headers, config) {
           data = formschema_db.find({
@@ -83,11 +86,13 @@ app.controller('FormListCtrl', function ($scope, $state, $stateParams, $q,
               sort: [{_id: 'desc'}]
         }).then(function(data){
             //got from local store, populate
+            console.log('fetch from local store, populate view');
             $scope.formnames = data.docs;
           });
       }
     ).then(function(){
     //  done after
+      console.log('fetch content done');
     })
   };
   ctrl.fetchContent();
