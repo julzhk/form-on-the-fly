@@ -75,9 +75,8 @@ app.controller('FormListCtrl', function ($scope, $state, $stateParams, $q,
             upsert(formschema_db, form);
           });
       }).error(
-        console.log('start fetch from local store');
-        //server not contacted, get from local db
         function (error, status, headers, config) {
+          console.log('start fetch from local store');
           data = formschema_db.find({
             selector: {
               _id: {'$gt': null}
