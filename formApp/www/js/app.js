@@ -36,7 +36,7 @@ var app = angular.module('starter', ['ionic', 'formlyIonic', 'ngAnimate']);
 app.factory('DataSingleton', DataSingleton);
 app.factory('formdataService', formdataService);
 
-app.run(function ($ionicPlatform,$state) {
+app.run(function ($ionicPlatform,$state, formdataService) {
   //initialise
   $ionicPlatform.ready(function () {
     if (window.cordova && window.cordova.plugins.Keyboard) {
@@ -53,6 +53,11 @@ app.run(function ($ionicPlatform,$state) {
       StatusBar.styleDefault();
     }
   //  custom initializations
+      $ionicPlatform.ready(function () {
+    formdataService.initDB();
+    // Get all formdata records from the database.
+  });
+
   //  to do redirect and init
     $state.go('login');
   });
@@ -199,15 +204,10 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
   var ctrl = this;
   ctrl.model = {};
   var formdata_id = $stateParams.formid;
-  //todo move this
-  $ionicPlatform.ready(function () {
-    formdataService.initDB();
-    // Get all formdata records from the database.
-    formdataService.getAllformdatas().then(function (formdatas) {
+  formdataService.getAllformdatas().then(function (formdatas) {
       ctrl.formdatas = formdatas;
       $scope.formdatas = formdatas;
     });
-  });
 
   function is_view_only(){
     if (typeof $stateParams.viewonly == 'undefined') {
@@ -285,15 +285,30 @@ app.controller('FormCtrl', function ($scope, $state, $stateParams,
       .success(function (data, status, headers, config) {
         console.log(data);
         ctrl.fields = data.elements;
-        _.map(ctrl.fields,function(f){ delete f.custom });
+        _.map(ctrl.fields, function (f) {
+          delete f.custom
+        });
         ctrl.formname = data.meta.formname;
         console.log(ctrl.fields);
       })
       .error(function (error, status, headers, config) {
-        console.log(status);
-        console.log("Error occured");
+        console.log("REST FORM Error occured");
+        data = formschema_db.find({
+          selector: {
+            _id: {'$eq': formid}
+          },
+          include_docs: true
+        }).then(function (data) {
+          //got from local store, populate
+          console.log('fetched schema from local ');
+          ctrl.fields = data.docs[0].elements;
+          _.map(ctrl.fields, function (f) {
+            delete f.custom
+          });
+          ctrl.formname = data.docs[0].meta.formname;
+        });
       });
-  };
+  }
   console.log($stateParams.formid);
   ctrl.fetchContent($stateParams.formid);
 });
