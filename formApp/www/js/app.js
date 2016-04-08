@@ -64,8 +64,8 @@ app.run(function ($ionicPlatform,$state, formdataService) {
 });
 
 
-app.controller('FormListCtrl', function ($scope, $state, $stateParams, $q,
-                                         formdataService, $ionicHistory, $http) {
+app.controller('FormChooserCtrl', function ($scope, $state, $stateParams, $q,
+                                            formdataService, $ionicHistory, $http) {
   var ctrl = this;
   ctrl.fetchContent = function () {
      //try to get form data (especially names) from server
@@ -360,7 +360,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     .state('formchooser', {
       url: '/formchooser/',
       templateUrl: 'formchooser.html',
-      controller: 'FormListCtrl'
+      controller: 'FormChooserCtrl'
     })
     .state('formdata', {
       url: '/formdata/:formid',
