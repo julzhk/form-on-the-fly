@@ -25,7 +25,7 @@ function formdataService($q) {
 
     function addformdata(formdata) {
           return $q.when(formdata_db.post(formdata));
-    };
+    }
 
     function deleteallformdata() {
           console.log('deleteallformdata formdata');
@@ -117,3 +117,29 @@ function formdataService($q) {
     }
 }
 
+function formschemaService($q) {
+//  gets data from REST API if available, falls back to pouchdb if not
+    var formschema_db;
+      return {
+        initDB: initDB,
+        addformschema: addformschema,
+        findformschema: findformschema,
+        getAllformschema: getAllformschema,
+        deleteformschema: deleteformschema,
+        deleteallformschema: deleteallformschema
+    };
+
+    function initDB() {
+        // Creates the database or opens if it already exists
+        formschema_db = new PouchDB(POUCH_SCHEMA_DB_NAME, {adapter: 'websql'});
+    }
+
+    function addformschema(formschema) {
+          return $q.when(formdata_db.post(formschema));
+    }
+
+    function findformschema(){}
+    function getAllformschema(){}
+    function deleteformschema(){}
+    function deleteallformschema(){}
+}
