@@ -35,8 +35,9 @@ formschema_db.createIndex({
 var app = angular.module('starter', ['ionic', 'formlyIonic', 'ngAnimate']);
 app.factory('DataSingleton', DataSingleton);
 app.factory('formdataService', formdataService);
+app.factory('formschemaService', formschemaService);
 
-app.run(function ($ionicPlatform,$state, formdataService) {
+app.run(function ($ionicPlatform,$state, formdataService, formschemaService) {
   //initialise
   $ionicPlatform.ready(function () {
     if (window.cordova && window.cordova.plugins.Keyboard) {
