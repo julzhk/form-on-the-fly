@@ -117,7 +117,7 @@ function formdataService($q) {
     }
 }
 
-function formschemaService($q) {
+function formschemaService($q,$http) {
 //  gets data from REST API if available, falls back to pouchdb if not
     var formschema_db;
       return {
@@ -137,8 +137,46 @@ function formschemaService($q) {
     function addformschema(formschema) {
           return $q.when(formdata_db.post(formschema));
     }
+    function remove_custom_fields(fields){
+      // there are some extra data for each field, which form.ly form rendered chokes on
+      // such as 'form name'
+      // so remove these before rendering
+      _.map(fields, function (f) {
+            delete f.custom
+          });
+      return fields;
 
-    function findformschema(){}
+    }
+    function findformschema(formid){
+
+      $http.get(FORM_SCHEMA_API + formid)
+      .success(function (data, status, headers, config) {
+          //get field names
+          console.log(data);
+          //get the name of the form
+          formname = data.meta.formname;
+          fields = data.elements;
+          fields=remove_custom_fields(fields);
+          return fields;
+        }
+      ).error(
+        function (error, status, headers, config) {
+          // API didn't work, so get from local store
+          console.log("REST FORM Error occured");
+          data = formschema_db.find({
+            selector: {
+              _id: {'$eq': formid}
+            },
+          include_docs: true
+        }).then(function (data) {
+            //got from local store, populate
+            console.log('fetched schema from local ');
+            fields = data.docs[0].elements;
+            formname = data.docs[0].meta.formname;
+            fields=remove_custom_fields(fields);
+        });
+      });
+    }
     function getAllformschema(){}
     function deleteformschema(){}
     function deleteallformschema(){}
