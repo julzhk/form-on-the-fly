@@ -1,3 +1,18 @@
+// todo: add this to the services
+function upsert( db, doc ) {
+    db.get( doc._id )
+        .then (function(_doc) {
+            console.log('updating');
+            doc._rev = _doc._rev;
+            return db.put(doc);
+            })
+        .catch( function (error) {
+            console.log('inserting');
+            return db.put(doc);
+        })
+}
+
+
 function DataSingleton() {
     // share a global state between controllers
     // http://stackoverflow.com/questions/21919962/share-data-between-angularjs-controllers
@@ -118,7 +133,7 @@ function formdataService($q) {
 }
 
 function formschemaService($q,$http) {
-//  gets data from REST API if available, falls back to pouchdb if not
+//  gets data from REST API if available, falls back to pouchdb if not, throws error if no pouch either
     var formschema_db;
       return {
         initDB: initDB,
@@ -135,11 +150,11 @@ function formschemaService($q,$http) {
     }
 
     function addformschema(formschema) {
-          return $q.when(formdata_db.post(formschema));
+          return $q.when(formschema_db.post(formschema));
     }
     function remove_custom_fields(fields){
-      // there are some extra data for each field, which form.ly form rendered chokes on
-      // such as 'form name'
+      // there are some extra data for each field, which form.ly chokes on
+      // such as 'form name' etc
       // so remove these before rendering
       _.map(fields, function (f) {
             delete f.custom
@@ -148,9 +163,8 @@ function formschemaService($q,$http) {
 
     }
     function findformschema(formid){
-
-      $http.get(FORM_SCHEMA_API + formid)
-      .success(function (data, status, headers, config) {
+      $http.get(FORM_SCHEMA_API + formid).success(
+        function (data, status, headers, config) {
           //get field names
           console.log(data);
           //get the name of the form
@@ -163,18 +177,17 @@ function formschemaService($q,$http) {
         function (error, status, headers, config) {
           // API didn't work, so get from local store
           console.log("REST FORM Error occured");
-          data = formschema_db.find({
-            selector: {
-              _id: {'$eq': formid}
-            },
-          include_docs: true
-        }).then(function (data) {
+          data = formschema_db.find({selector: {_id: {'$eq': formid}},
+            include_docs: true
+          }).then(function (data) {
             //got from local store, populate
             console.log('fetched schema from local ');
             fields = data.docs[0].elements;
             formname = data.docs[0].meta.formname;
             fields=remove_custom_fields(fields);
-        });
+        }).catch(function (err) {
+            console.log('error with form schema pouch db')
+          });
       });
     }
     function getAllformschema(){}

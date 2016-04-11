@@ -9,19 +9,6 @@ const FORMS_LIST_ENDPOINT= DJANGO_END_POINT + 'api/v1/forms/';
 const FORM_SCHEMA_ENDPOINT= DJANGO_END_POINT + 'api/all';
 const FORM_SCHEMA_API= DJANGO_END_POINT + 'api/';
 
-function upsert( db, doc ) {
-    db.get( doc._id )
-        .then (function(_doc) {
-            console.log('updating');
-            doc._rev = _doc._rev;
-            return db.put(doc);
-            })
-        .catch( function (error) {
-            console.log('inserting');
-            return db.put(doc);
-        })
-}
-
 
 // todo can do as myApp.value('DBNAME', 'forms');
 
@@ -37,7 +24,7 @@ app.factory('DataSingleton', DataSingleton);
 app.factory('formdataService', formdataService);
 app.factory('formschemaService', formschemaService);
 
-app.run(function ($ionicPlatform,$state, formdataService, formschemaService) {
+app.run(function ($ionicPlatform, $state, formdataService, formschemaService) {
   //initialise
   $ionicPlatform.ready(function () {
     if (window.cordova && window.cordova.plugins.Keyboard) {
@@ -58,6 +45,8 @@ app.run(function ($ionicPlatform,$state, formdataService, formschemaService) {
     formdataService.initDB();
     // Get all formdata records from the database.
   });
+    formschemaService.initDB();
+    formschemaService.findformschema(5);
 
   //  to do redirect and init
     $state.go('login');
