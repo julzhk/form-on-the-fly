@@ -162,31 +162,40 @@ function formschemaService($q,$http) {
       return fields;
 
     }
-    function findformschema(formid){
-      $http.get(FORM_SCHEMA_API + formid).success(
-        function (data, status, headers, config) {
+    function api_success(data, status, headers, config) {
           //get field names
           console.log(data);
           //get the name of the form
           formname = data.meta.formname;
           fields = data.elements;
           fields=remove_custom_fields(fields);
-          return fields;
+          //return fields;
+          return 'boo0';
         }
-      ).error(
-        function (error, status, headers, config) {
-          // API didn't work, so get from local store
-          console.log("REST FORM Error occured");
-          data = formschema_db.find({selector: {_id: {'$eq': formid}},
-            include_docs: true
-          }).then(function (data) {
+  function pouch_find_success(data) {
             //got from local store, populate
             console.log('fetched schema from local ');
             fields = data.docs[0].elements;
             formname = data.docs[0].meta.formname;
             fields=remove_custom_fields(fields);
-        }).catch(function (err) {
-            console.log('error with form schema pouch db')
+            return 'boo1';
+        }
+
+    function findformschema(formid){
+      $http.get(FORM_SCHEMA_API + formid).success(
+        function (data, status, headers, config) {
+          api_success(data, status, headers, config)
+        }
+      ).error(
+        function (error, status, headers, config) {
+          // API didn't work, so get from local store
+          console.log("REST FORM Error occured");
+          data = formschema_db.find({selector: { _id: {'$eq': formid} },include_docs: true}
+          ).then(
+            pouch_find_success(data)
+          ).catch(function (err) {
+            console.log('error with form schema pouch db');
+            return 'boo2';
           });
       });
     }

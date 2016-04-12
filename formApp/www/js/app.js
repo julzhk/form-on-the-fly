@@ -46,7 +46,10 @@ app.run(function ($ionicPlatform, $state, formdataService, formschemaService) {
     // Get all formdata records from the database.
   });
     formschemaService.initDB();
-    formschemaService.findformschema(5);
+    console.log('v1');
+    v = formschemaService.findformschema(5);
+    console.log('v');
+    console.log(v);
 
   //  to do redirect and init
     $state.go('login');
