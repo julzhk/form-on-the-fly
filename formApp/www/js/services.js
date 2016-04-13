@@ -169,8 +169,7 @@ function formschemaService($q,$http) {
           formname = data.meta.formname;
           fields = data.elements;
           fields=remove_custom_fields(fields);
-          //return fields;
-          return 'boo0';
+          return fields;
         }
   function pouch_find_success(data) {
             //got from local store, populate
@@ -178,7 +177,7 @@ function formschemaService($q,$http) {
             fields = data.docs[0].elements;
             formname = data.docs[0].meta.formname;
             fields=remove_custom_fields(fields);
-            return 'boo1';
+            return fields;
         }
 
     function findformschema(formid){
@@ -195,7 +194,7 @@ function formschemaService($q,$http) {
             pouch_find_success(data)
           ).catch(function (err) {
             console.log('error with form schema pouch db');
-            return 'boo2';
+            return 'err!';
           });
       });
     }
