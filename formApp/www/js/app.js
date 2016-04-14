@@ -1,7 +1,7 @@
 const DJANGO_END_POINT = "http://127.0.0.1:8000/";
 const DB_END_POINT = "http://127.0.0.1:5984/";
 const POUCH_FORM_DATA_DB_NAME = "formdata";
-const POUCH_SCHEMA_DB_NAME = "formschema";
+const POUCH_SCHEMA_DB_NAME = "formschema2";
 const POST_END_POINT= DB_END_POINT + POUCH_FORM_DATA_DB_NAME;
 
 const LOGIN_POST_ENDPOINT= DJANGO_END_POINT + 'api/v1/auth/login/';
@@ -46,8 +46,14 @@ app.run(function ($ionicPlatform, $state, formdataService, formschemaService) {
     // Get all formdata records from the database.
   });
     formschemaService.initDB();
+    formschemaService.upsert({'_id':'form_217',
+      'a':'bb',
+      'elements':'1234elements',
+      'meta':{'formname':'myform3'}
+
+    });
     console.log('v1');
-    v = formschemaService.findformschema(5);
+    v = formschemaService.findformschema('form_217');
     console.log('v');
     console.log(v);
 

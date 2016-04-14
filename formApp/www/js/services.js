@@ -141,7 +141,8 @@ function formschemaService($q,$http) {
         findformschema: findformschema,
         getAllformschema: getAllformschema,
         deleteformschema: deleteformschema,
-        deleteallformschema: deleteallformschema
+        deleteallformschema: deleteallformschema,
+        upsert: upsert
     };
 
     function initDB() {
@@ -152,11 +153,25 @@ function formschemaService($q,$http) {
     function addformschema(formschema) {
           return $q.when(formschema_db.post(formschema));
     }
+    function upsert(doc) {
+      formschema_db.get( doc._id )
+          .then (function(_doc) {
+              console.log('updating');
+              doc._rev = _doc._rev;
+              return formschema_db.put(doc);
+              })
+          .catch( function (error) {
+              console.log('inserting');
+              return formschema_db.put(doc);
+          })
+  }
+
     function remove_custom_fields(fields){
       // there are some extra data for each field, which form.ly chokes on
       // such as 'form name' etc
       // so remove these before rendering
       _.map(fields, function (f) {
+            delete f.custom
             delete f.custom
           });
       return fields;
@@ -174,10 +189,13 @@ function formschemaService($q,$http) {
   function pouch_find_success(data) {
             //got from local store, populate
             console.log('fetched schema from local ');
+            console.log(data);
             fields = data.docs[0].elements;
-            formname = data.docs[0].meta.formname;
             fields=remove_custom_fields(fields);
-            return fields;
+            console.log(fields);
+            formname = data.docs[0].meta.formname;
+    console.log(formname);
+    return fields;
         }
 
     function findformschema(formid){
@@ -188,10 +206,11 @@ function formschemaService($q,$http) {
       ).error(
         function (error, status, headers, config) {
           // API didn't work, so get from local store
-          console.log("REST FORM Error occured");
-          data = formschema_db.find({selector: { _id: {'$eq': formid} },include_docs: true}
-          ).then(
-            pouch_find_success(data)
+          console.log("REST FORM schema GET Error occured");
+          data = formschema_db.find({selector: { _id: {'$eq': formid} }, include_docs: true}
+          ).then(function(data){
+            pouch_find_success(data);
+          }
           ).catch(function (err) {
             console.log('error with form schema pouch db');
             return 'err!';
