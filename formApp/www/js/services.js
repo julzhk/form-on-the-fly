@@ -135,11 +135,13 @@ function formdataService($q) {
 function formschemaService($q,$http) {
 //  gets data from REST API if available, falls back to pouchdb if not, throws error if no pouch either
     var formschema_db;
+    var _pouchdb_rows;
       return {
         initDB: initDB,
         addformschema: addformschema,
         findformschema: findformschema,
         getAllformschema: getAllformschema,
+        getallformnames: getAllformnames,
         deleteformschema: deleteformschema,
         deleteallformschema: deleteallformschema,
         upsert: upsert
@@ -153,6 +155,13 @@ function formschemaService($q,$http) {
     function addformschema(formschema) {
           return $q.when(formschema_db.post(formschema));
     }
+
+    function getAllformnames(){
+      r = getAllformschema();
+      console.log('getAllformnames');
+      console.log(r);
+    }
+
     function upsert(doc) {
       formschema_db.get( doc._id )
           .then (function(_doc) {
@@ -171,7 +180,6 @@ function formschemaService($q,$http) {
       // such as 'form name' etc
       // so remove these before rendering
       _.map(fields, function (f) {
-            delete f.custom
             delete f.custom
           });
       return fields;
@@ -217,7 +225,51 @@ function formschemaService($q,$http) {
           });
       });
     }
-    function getAllformschema(){}
+
+  function getAllformschema() {
+        if (!_pouchdb_rows) {
+           return $q.when(formschema_db.allDocs({ include_docs: true}))
+                .then(function(docs) {
+                    _pouchdb_rows = docs.rows.map(function(row) {
+                      return row.doc;
+                    });
+                    // Listen for changes on the database.
+                    formschema_db.changes({ live: true, since: 'now', include_docs: true})
+                       .on('change', onDatabaseChange);
+                    return _pouchdb_rows;
+                });
+        } else {
+            // Return cached data as a promise
+            return $q.when(_pouchdb_rows);
+        }
+    }
+
     function deleteformschema(){}
     function deleteallformschema(){}
+
+  function onDatabaseChange(change) {
+        var index = findIndex(_pouchdb_rows, change.id);
+        var formdata = _pouchdb_rows[index];
+        if (change.deleted) {
+            if (formdata) {
+                _pouchdb_rows.splice(index, 1); // delete
+            }
+        } else {
+            if (formdata && formdata._id === change.id) {
+                _pouchdb_rows[index] = change.doc; // update
+            } else {
+                _pouchdb_rows.splice(index, 0, change.doc);// insert
+            }
+        }
+    }
+
+  function findIndex(array, id) {
+      var low = 0, high = array.length, mid;
+      while (low < high) {
+        mid = (low + high) >>> 1;
+        array[mid]._id < id ? low = mid + 1 : high = mid
+      }
+      return low;
+    }
+
 }

@@ -46,28 +46,18 @@ app.run(function ($ionicPlatform, $state, formdataService, formschemaService) {
     // Get all formdata records from the database.
   });
     formschemaService.initDB();
-    formschemaService.upsert({'_id':'form_217',
-      'a':'bb',
-      'elements':'1234elements',
-      'meta':{'formname':'myform3'}
-
-    });
-    console.log('v1');
-    v = formschemaService.findformschema('form_217');
-    console.log('v');
-    console.log(v);
-
-  //  to do redirect and init
+  //  redirect and init
     $state.go('login');
   });
 });
 
 
-app.controller('FormChooserCtrl', function ($scope, $state, $stateParams, $q,
+app.controller('FormChooserCtrl', function ($scope, $state, $stateParams, $q,formschemaService,
                                             formdataService, $ionicHistory, $http) {
   var ctrl = this;
   ctrl.fetchContent = function () {
      //try to get form data (especially names) from server
+    formschemaService.getallformnames();
     $http.get(FORM_SCHEMA_ENDPOINT)
       .success(function (data, status, headers, config) {
         console.log('got from server');
