@@ -156,10 +156,17 @@ function formschemaService($q,$http) {
           return $q.when(formschema_db.post(formschema));
     }
 
-    function getAllformnames(){
-      r = getAllformschema();
+    function getAllformnames() {
       console.log('getAllformnames');
-      console.log(r);
+      r = getAllformschema().then(function (data) {
+        names = _.map(data, function (item) {
+          if (item.hasOwnProperty('meta')){
+            return item.meta.formname;
+          }
+        });
+        return names;
+      });
+
     }
 
     function upsert(doc) {
