@@ -156,17 +156,11 @@ function formschemaService($q,$http) {
           return $q.when(formschema_db.post(formschema));
     }
 
-    function getAllformnames() {
-      console.log('getAllformnames');
-      r = getAllformschema().then(function (data) {
-        names = _.map(data, function (item) {
-          if (item.hasOwnProperty('meta')){
-            return item.meta.formname;
-          }
-        });
-        return names;
-      });
 
+    function getAllformnames(){
+      console.log('getAllformnames');
+      r = getAllformschema();
+        console.log(r);
     }
 
     function upsert(doc) {
@@ -192,6 +186,7 @@ function formschemaService($q,$http) {
       return fields;
 
     }
+
     function api_success(data, status, headers, config) {
           //get field names
           console.log(data);
@@ -201,7 +196,8 @@ function formschemaService($q,$http) {
           fields=remove_custom_fields(fields);
           return fields;
         }
-  function pouch_find_success(data) {
+
+    function pouch_find_success(data) {
             //got from local store, populate
             console.log('fetched schema from local ');
             console.log(data);
@@ -233,22 +229,45 @@ function formschemaService($q,$http) {
       });
     }
 
-  function getAllformschema() {
-        if (!_pouchdb_rows) {
-           return $q.when(formschema_db.allDocs({ include_docs: true}))
-                .then(function(docs) {
-                    _pouchdb_rows = docs.rows.map(function(row) {
-                      return row.doc;
-                    });
-                    // Listen for changes on the database.
-                    formschema_db.changes({ live: true, since: 'now', include_docs: true})
-                       .on('change', onDatabaseChange);
-                    return _pouchdb_rows;
-                });
-        } else {
-            // Return cached data as a promise
-            return $q.when(_pouchdb_rows);
-        }
+  function getAllformschema($scope) {
+    // try online API first
+    $http.get(FORM_SCHEMA_ENDPOINT)
+      .success(function (data, status, headers, config) {
+        // API succeeded, so get data to view
+        // and update local datastore
+        console.log('got from server');
+        $scope.formnames = data;
+        $scope.servererror = false;
+        console.log('upsert to local store');
+        _.map(data, function(form){
+          console.log('upsert');
+            upsert(formschema_db, form);
+          });
+        return data;
+      }).error(
+        //API failed, so get from local store
+        function (error, status, headers, config) {
+          console.log('start fetch from local store');
+          data = formschema_db.find({
+            selector: {
+              _id: {'$gt': null}
+            },
+              include_docs: true,
+              sort: [{_id: 'desc'}]
+        }).then(function(data){
+            //got from local store
+            console.log('fetch from local store');
+            console.log(data);
+            return data;
+          }).catch(function(){
+          //  local store failed!
+          })
+      }
+    ).then(function(){
+    //  done after
+      console.log('fetch content done');
+    })
+
     }
 
     function deleteformschema(){}
