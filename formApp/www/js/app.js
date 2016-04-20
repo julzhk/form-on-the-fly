@@ -57,6 +57,7 @@ app.controller('FormChooserCtrl', function ($scope, $state, $stateParams, $q,for
   var ctrl = this;
   ctrl.fetchContent = function () {
      //try to get form data (especially names) from server
+    //TODO : find out how scope works with services
     formschemaService.getallformnames();
     $http.get(FORM_SCHEMA_ENDPOINT)
       .success(function (data, status, headers, config) {

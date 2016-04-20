@@ -19,7 +19,7 @@ function DataSingleton() {
     return {'user_email': 'anon'};
 }
 //THIS IS HOW TO DI TO A SERVICE?VV
-function formdataService($q,$scope) {
+function formdataService($q) {
     //store the user created data for later online sync
     var formdata_db;
     // We'll need this later.
