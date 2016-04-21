@@ -136,33 +136,17 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
   };
 
   ctrl.fetchFormElements = function (formid) {
-
-    //get column headers
+    // get the empty elements from API
+    // todo turn this to a service
     $http.get('http://127.0.0.1:8000/api/' + formid)
-  .success(function (data, status, headers, config) {
-    $scope.fields = data.elements;
-    $scope.formname = data.meta.formname;
-  })
-  .error(function (error, status, headers, config) {
-    console.log(status);
-    console.log("API Error occured");
-      formschema_db.find({
-              selector: {
-                _id: {'$eq': formid}
-              },  include_docs: true,
-                sort: [{_id: 'desc'}]
-          }).then(function(data){
-              //got from local store, populate
-            console.log('pouch //got from local store, populate');
-            _.map(data, function(formdata){
-                $scope.fields = formdata[0].docs.elements;
-                $scope.formname = formdata[0].docs.meta.formname;
-              });
-          }).catch(function (err) {
-            // get the empty elements from API
-          console.log('pouch err - and api error!');
+      .success(function (data, status, headers, config) {
+        $scope.fields = data.elements;
+        $scope.formname = data.meta.formname;
+      })
+      .error(function (error, status, headers, config) {
+        console.log(status);
+        console.log("Error occured");
       });
-  });
 
   };
 
@@ -176,8 +160,8 @@ app.controller('FormDataCtrl', function ($scope, $state, $stateParams,
     formdata_db.find({
       selector: {formid: {$eq: formid}}
     }).then(function (result) {
-      ctrl.formdata = result.docs[0];
-      $scope.formdata = result.docs[0];
+      ctrl.formdata = result.docs;
+      $scope.formdata = result.docs;
       console.log($scope.formdata);
       $scope.$apply();
     }).catch(function (err) {
