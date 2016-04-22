@@ -144,6 +144,7 @@ function formschemaService($q,$http) {
         getallformnames: getAllformnames,
         deleteformschema: deleteformschema,
         deleteallformschema: deleteallformschema,
+        fetchFormElements: fetchFormElements,
         upsert: upsert
     };
 
@@ -288,6 +289,18 @@ function formschemaService($q,$http) {
             }
         }
     }
+
+  function fetchFormElements(formid){
+        $http.get('http://127.0.0.1:8000/api/' + formid)
+      .success(function (data, status, headers, config) {
+        return data
+      })
+      .error(function (error, status, headers, config) {
+        console.log(status);
+        console.log("Error occured");
+      });
+
+  }
 
   function findIndex(array, id) {
       var low = 0, high = array.length, mid;
